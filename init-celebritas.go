@@ -3,6 +3,7 @@ package main
 import (
 	"github.com/lozhkindm/celeritas"
 	"log"
+	"myapp/handlers"
 	"os"
 )
 
@@ -21,8 +22,11 @@ func initApplication() *application {
 	cel.Debug = true
 
 	app := &application{
-		App: cel,
+		App:      cel,
+		Handlers: &handlers.Handlers{App: cel},
 	}
+
+	app.App.Routes = app.routes()
 
 	return app
 }
