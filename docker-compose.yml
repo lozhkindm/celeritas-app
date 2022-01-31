@@ -1,0 +1,35 @@
+version: '3'
+
+services:
+  postgres:
+    image: 'postgres:13.4'
+    ports:
+      - "5432:5432"
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: celeritas
+    volumes:
+      - ./db-data/postgresql/:/var/lib/postgresql/data/
+
+  redis:
+    image: 'redis:alpine'
+    ports:
+      - "6379:6379"
+    restart: always
+    volumes:
+      - ./db-data/redis/:/data
+
+  mariadb:
+    image: 'mariadb:10.6'
+    ports:
+      - "3306:3306"
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: celeritas
+      MYSQL_USER: mariadb
+      MYSQL_PASSWORD: password
+    volumes:
+      - ./db-data/mariadb:/docker-entrypoint-initdb.d
