@@ -40,7 +40,7 @@ func (u *User) GetByEmail(email string) (*User, error) {
 
 	coll := upper.Collection(u.Table())
 	res := coll.Find(up.Cond{"email": email})
-	if err := res.One(usr); err != nil {
+	if err := res.One(&usr); err != nil {
 		return nil, err
 	}
 
@@ -57,8 +57,8 @@ func (u *User) GetById(id int) (*User, error) {
 	var usr *User
 
 	coll := upper.Collection(u.Table())
-	res := coll.Find(up.Cond{"id": id}) // mb just id?
-	if err := res.One(usr); err != nil {
+	res := coll.Find(id)
+	if err := res.One(&usr); err != nil {
 		return nil, err
 	}
 
@@ -71,11 +71,11 @@ func (u *User) GetById(id int) (*User, error) {
 	return usr, nil
 }
 
-func (u *User) Update(user User) error {
+func (u *User) Update(user *User) error {
 	user.UpdatedAt = time.Now()
 	coll := upper.Collection(u.Table())
 	res := coll.Find(user.ID)
-	if err := res.Update(&user); err != nil {
+	if err := res.Update(user); err != nil {
 		return err
 	}
 	return nil
@@ -90,7 +90,7 @@ func (u *User) Delete(id int) error {
 	return nil
 }
 
-func (u *User) Insert(user User) (int, error) {
+func (u *User) Insert(user *User) (int, error) {
 	hash, err := bcrypt.GenerateFromPassword([]byte(user.Password), 12)
 	if err != nil {
 		return 0, err
@@ -122,7 +122,7 @@ func (u *User) ResetPassword(id int, password string) error {
 	}
 
 	usr.Password = string(hash)
-	if err := u.Update(*usr); err != nil {
+	if err := u.Update(usr); err != nil {
 		return err
 	}
 

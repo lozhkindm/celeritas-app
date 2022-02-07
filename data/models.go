@@ -15,6 +15,8 @@ var (
 )
 
 type Models struct {
+	Users  User
+	Tokens Token
 }
 
 func New(dbPool *sql.DB) Models {
@@ -27,7 +29,10 @@ func New(dbPool *sql.DB) Models {
 		upper, _ = postgresql.New(db)
 	}
 
-	return Models{}
+	return Models{
+		Users:  User{},
+		Tokens: Token{},
+	}
 }
 
 func getInsertedId(id udb.ID) int {
