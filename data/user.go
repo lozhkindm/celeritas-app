@@ -146,7 +146,7 @@ func getUserToken(user User) (Token, error) {
 	coll := upper.Collection(token.Table())
 	res := coll.Find(up.Cond{
 		"user_id":  user.ID,
-		"expiry <": time.Now(),
+		"expiry >": time.Now(),
 	}).OrderBy("created_at desc")
 
 	if err := res.One(&token); err != nil && err != up.ErrNilRecord && err != up.ErrNoMoreRows {
