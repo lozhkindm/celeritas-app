@@ -1,13 +1,21 @@
+//go:build integration
+
+//go test . --tags integration --count=1
 package data
 
 import (
 	"database/sql"
 	"fmt"
-	"github.com/ory/dockertest/v3"
-	"github.com/ory/dockertest/v3/docker"
+	"io/ioutil"
 	"log"
 	"os"
 	"testing"
+
+	_ "github.com/jackc/pgconn"
+	_ "github.com/jackc/pgx/v4"
+	_ "github.com/jackc/pgx/v4/stdlib"
+	"github.com/ory/dockertest/v3"
+	"github.com/ory/dockertest/v3/docker"
 )
 
 var (
@@ -69,7 +77,6 @@ func TestMain(m *testing.M) {
 	}
 
 	if err := pool.Retry(func() error {
-		var err error
 		testDB, err = sql.Open("pgx", fmt.Sprintf(dsn, dbHost, dbPort, dbUser, dbPassword, dbName))
 		if err != nil {
 			return err
@@ -80,5 +87,103 @@ func TestMain(m *testing.M) {
 		log.Fatalf("could not connect to docker: %s", err)
 	}
 
-	os.Exit(m.Run())
+	if err := createTables(testDB); err != nil {
+		_ = pool.Purge(resource)
+		log.Fatalf("could not create tables: %s", err)
+	}
+
+	models = New(testDB)
+	code := m.Run()
+
+	if err := pool.Purge(resource); err != nil {
+		log.Fatalf("could not purge resource: %s", err)
+	}
+
+	os.Exit(code)
+}
+
+func createTables(db *sql.DB) error {
+	files := []string{"auth.sql", "users.sql"}
+	for _, file := range files {
+		content, err := ioutil.ReadFile(fmt.Sprintf("../db-sql/%s", file))
+		if err != nil {
+			return err
+		}
+		if err := runQuery(db, string(content)); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+func runQuery(db *sql.DB, query string) error {
+	if _, err := db.Exec(query); err != nil {
+		return err
+	}
+	return nil
+}
+
+func TestUser_Table(t *testing.T) {
+	s := models.Users.Table()
+	if s != "users" {
+		t.Errorf("wrong table name: %s", s)
+	}
+}
+
+func TestUser_Insert(t *testing.T) {
+	id, err := models.Users.Insert(&dummyUser)
+	if err != nil {
+		t.Fatalf("failed to insert a user: %s", err)
+	}
+	if id == 0 {
+		t.Error("0 returned as user id")
+	}
+}
+
+func TestUser_GetById(t *testing.T) {
+	u, err := models.Users.GetById(1)
+	if err != nil {
+		t.Errorf("failed to get a user: %s", err)
+	}
+	if u.ID == 0 {
+		t.Error("0 returned as user id")
+	}
+}
+
+func TestUser_GetByEmail(t *testing.T) {
+	u, err := models.Users.GetByEmail(dummyUser.Email)
+	if err != nil {
+		t.Errorf("failed to get a user: %s", err)
+	}
+	if u.ID == 0 {
+		t.Error("0 returned as user id")
+	}
+}
+
+func TestUser_GetAll(t *testing.T) {
+	_, err := models.Users.GetAll()
+	if err != nil {
+		t.Errorf("failed to get all users: %s", err)
+	}
+}
+
+func TestUser_Update(t *testing.T) {
+	u, err := models.Users.GetById(1)
+	if err != nil {
+		t.Errorf("failed to get a user: %s", err)
+	}
+
+	u.FirstName = "Senka"
+	err = models.Users.Update(u)
+	if err != nil {
+		t.Errorf("failed to update a user: %s", err)
+	}
+
+	u, err = models.Users.GetById(1)
+	if err != nil {
+		t.Errorf("failed to get a user: %s", err)
+	}
+	if u.FirstName != "Senka" {
+		t.Error("user is not updated")
+	}
 }

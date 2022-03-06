@@ -3,10 +3,11 @@ package data
 import (
 	"database/sql"
 	"fmt"
+	"os"
+
 	udb "github.com/upper/db/v4"
 	"github.com/upper/db/v4/adapter/mysql"
 	"github.com/upper/db/v4/adapter/postgresql"
-	"os"
 )
 
 var (

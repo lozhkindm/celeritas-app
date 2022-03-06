@@ -2,9 +2,10 @@ package data
 
 import (
 	"errors"
+	"time"
+
 	up "github.com/upper/db/v4"
 	"golang.org/x/crypto/bcrypt"
-	"time"
 )
 
 type User struct {
