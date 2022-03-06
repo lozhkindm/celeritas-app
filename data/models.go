@@ -35,7 +35,7 @@ func New(dbPool *sql.DB) Models {
 	}
 }
 
-func getInsertedId(id udb.ID) int {
+func getInsertedID(id udb.ID) int {
 	t := fmt.Sprintf("%T", id)
 	if t == "int64" {
 		return int(id.(int64))
