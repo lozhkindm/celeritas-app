@@ -1,11 +1,14 @@
+//go:build unit
+
 package data
 
 import (
 	"fmt"
-	"github.com/DATA-DOG/go-sqlmock"
-	udb "github.com/upper/db/v4"
 	"os"
 	"testing"
+
+	"github.com/DATA-DOG/go-sqlmock"
+	udb "github.com/upper/db/v4"
 )
 
 func TestNew(t *testing.T) {

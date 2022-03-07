@@ -2,10 +2,12 @@ package main
 
 import (
 	"fmt"
-	"github.com/go-chi/chi/v5"
-	"myapp/data"
 	"net/http"
 	"strconv"
+
+	"myapp/data"
+
+	"github.com/go-chi/chi/v5"
 )
 
 func (a *application) routes() *chi.Mux {

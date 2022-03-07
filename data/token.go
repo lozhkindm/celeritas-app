@@ -5,10 +5,11 @@ import (
 	"crypto/sha256"
 	"encoding/base32"
 	"errors"
-	up "github.com/upper/db/v4"
 	"net/http"
 	"strings"
 	"time"
+
+	up "github.com/upper/db/v4"
 )
 
 type Token struct {
@@ -47,10 +48,10 @@ func (t *Token) GetUser(token string) (*User, error) {
 	return usr, nil
 }
 
-func (t *Token) GetUsersTokens(id int) ([]*Token, error) {
+func (t *Token) GetUserTokens(userID int) ([]*Token, error) {
 	var tokens []*Token
 	coll := upper.Collection(t.Table())
-	res := coll.Find(up.Cond{"user_id": id})
+	res := coll.Find(up.Cond{"user_id": userID})
 	if err := res.All(&tokens); err != nil {
 		return nil, err
 	}

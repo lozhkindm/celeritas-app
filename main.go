@@ -1,9 +1,10 @@
 package main
 
 import (
-	"github.com/lozhkindm/celeritas"
 	"myapp/data"
 	"myapp/handlers"
+
+	"github.com/lozhkindm/celeritas"
 )
 
 type application struct {

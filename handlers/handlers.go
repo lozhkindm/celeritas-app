@@ -1,10 +1,12 @@
 package handlers
 
 import (
+	"net/http"
+
+	"myapp/data"
+
 	"github.com/CloudyKit/jet/v6"
 	"github.com/lozhkindm/celeritas"
-	"myapp/data"
-	"net/http"
 )
 
 type Handlers struct {

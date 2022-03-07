@@ -1,11 +1,13 @@
 package main
 
 import (
-	"github.com/lozhkindm/celeritas"
 	"log"
+	"os"
+
 	"myapp/data"
 	"myapp/handlers"
-	"os"
+
+	"github.com/lozhkindm/celeritas"
 )
 
 func initApplication() *application {
