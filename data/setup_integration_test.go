@@ -9,6 +9,7 @@ import (
 	"log"
 	"os"
 	"testing"
+	"time"
 
 	_ "github.com/jackc/pgconn"
 	_ "github.com/jackc/pgx/v4"
@@ -34,6 +35,12 @@ var (
 )
 
 func TestMain(m *testing.M) {
+	loc, err := time.LoadLocation("UTC")
+	if err != nil {
+		log.Fatalf("failed to load location: %s", err)
+	}
+	time.Local = loc
+
 	_ = os.Setenv("DATABASE_TYPE", "postgres")
 
 	p, err := dockertest.NewPool("")

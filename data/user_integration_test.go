@@ -89,7 +89,7 @@ func TestUser_CheckPassword(t *testing.T) {
 		t.Errorf("failed to check a password: %s", err)
 	}
 	if !match {
-		t.Errorf("password does not match when it should")
+		t.Error("password does not match when it should")
 	}
 
 	match, err = u.CheckPassword("should_not_match")
