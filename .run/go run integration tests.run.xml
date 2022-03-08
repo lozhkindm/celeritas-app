@@ -1,0 +1,13 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="go run integration tests" type="GoTestRunConfiguration" factoryName="Go Test">
+    <module name="celeritas-app" />
+    <working_directory value="$PROJECT_DIR$" />
+    <go_parameters value="--tags integration" />
+    <kind value="DIRECTORY" />
+    <package value="myapp" />
+    <directory value="$PROJECT_DIR$" />
+    <filePath value="$PROJECT_DIR$" />
+    <framework value="gotest" />
+    <method v="2" />
+  </configuration>
+</component>
