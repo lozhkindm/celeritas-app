@@ -6,14 +6,16 @@ import (
 
 	"myapp/data"
 	"myapp/handlers"
+	"myapp/middlewares"
 
 	"github.com/lozhkindm/celeritas"
 )
 
 type application struct {
-	App      *celeritas.Celeritas
-	Handlers *handlers.Handlers
-	Models   data.Models
+	App         *celeritas.Celeritas
+	Handlers    *handlers.Handlers
+	Models      data.Models
+	Middlewares *middlewares.Middleware
 }
 
 func main() {

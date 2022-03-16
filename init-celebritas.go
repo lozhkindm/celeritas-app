@@ -6,6 +6,7 @@ import (
 
 	"myapp/data"
 	"myapp/handlers"
+	"myapp/middlewares"
 
 	"github.com/lozhkindm/celeritas"
 )
@@ -25,13 +26,15 @@ func initApplication() *application {
 	cel.Debug = true
 
 	app := &application{
-		App:      cel,
-		Handlers: &handlers.Handlers{App: cel},
+		App:         cel,
+		Handlers:    &handlers.Handlers{App: cel},
+		Middlewares: &middlewares.Middleware{App: cel},
 	}
 
 	app.App.Routes = app.routes()
 	app.Models = data.New(app.App.DB.Pool)
 	app.Handlers.Models = app.Models
+	app.Middlewares.Models = app.Models
 
 	return app
 }
