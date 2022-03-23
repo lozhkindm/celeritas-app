@@ -4,6 +4,7 @@ import (
 	"errors"
 	"time"
 
+	"github.com/lozhkindm/celeritas"
 	up "github.com/upper/db/v4"
 	"golang.org/x/crypto/bcrypt"
 )
@@ -22,6 +23,13 @@ type User struct {
 
 func (u *User) Table() string {
 	return "users"
+}
+
+func (u *User) Validate(validator *celeritas.Validation) {
+	validator.Check(u.FirstName != "", "first_name", "First name is required")
+	validator.Check(u.LastName != "", "last_name", "Last name is required")
+	validator.Check(u.Email != "", "email", "Email is required")
+	validator.IsEmail("email", u.Email)
 }
 
 func (u *User) GetAll() ([]*User, error) {
