@@ -63,7 +63,15 @@ func (a *application) routes() *chi.Mux {
 			a.App.ErrorLog.Println(err)
 			return
 		}
+
 		user.LastName = a.App.RandStr(10)
+		validator := a.App.Validator(nil)
+		validator.Check(len(user.LastName) > 20, "last_name", "minimum 20 chars")
+		if !validator.IsValid() {
+			fmt.Fprint(w, "failed validation")
+			return
+		}
+
 		if err := a.Models.Users.Update(user); err != nil {
 			a.App.ErrorLog.Println(err)
 			return
