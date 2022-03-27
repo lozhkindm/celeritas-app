@@ -15,7 +15,7 @@ func (h *Handlers) ShowForm(w http.ResponseWriter, r *http.Request) {
 	vars.Set("validator", validator)
 	vars.Set("user", data.User{})
 
-	if err := h.App.Render.Page(w, r, "form", vars, nil); err != nil {
+	if err := h.render(w, r, "form", vars, nil); err != nil {
 		h.App.ErrorLog.Println(err)
 	}
 }
@@ -42,7 +42,7 @@ func (h *Handlers) SubmitForm(w http.ResponseWriter, r *http.Request) {
 		user.Email = r.Form.Get("email")
 		vars.Set("user", user)
 
-		if err := h.App.Render.Page(w, r, "form", vars, nil); err != nil {
+		if err := h.render(w, r, "form", vars, nil); err != nil {
 			h.App.ErrorLog.Println(err)
 		}
 

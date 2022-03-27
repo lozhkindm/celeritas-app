@@ -3,7 +3,7 @@ package handlers
 import "net/http"
 
 func (h *Handlers) UserLogin(w http.ResponseWriter, r *http.Request) {
-	if err := h.App.Render.Page(w, r, "login", nil, nil); err != nil {
+	if err := h.render(w, r, "login", nil, nil); err != nil {
 		h.App.ErrorLog.Println(err)
 	}
 }
@@ -33,14 +33,14 @@ func (h *Handlers) PostUserLogin(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	h.App.Session.Put(r.Context(), "userID", usr.ID)
+	h.sessionPut(r.Context(), "userID", usr.ID)
 	http.Redirect(w, r, "/", http.StatusSeeOther)
 }
 
 func (h *Handlers) UserLogout(w http.ResponseWriter, r *http.Request) {
-	if err := h.App.Session.RenewToken(r.Context()); err != nil {
+	if err := h.sessionRenew(r.Context()); err != nil {
 		h.App.ErrorLog.Println(err)
 	}
-	h.App.Session.Remove(r.Context(), "userID")
+	h.sessionRemove(r.Context(), "userID")
 	http.Redirect(w, r, "/users/login", http.StatusSeeOther)
 }
