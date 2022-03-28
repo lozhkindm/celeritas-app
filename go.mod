@@ -6,14 +6,19 @@ replace github.com/lozhkindm/celeritas => ../celeritas
 
 require (
 	github.com/CloudyKit/jet/v6 v6.1.0
+	github.com/DATA-DOG/go-sqlmock v1.5.0
 	github.com/go-chi/chi/v5 v5.0.7
+	github.com/jackc/pgconn v1.10.1
+	github.com/jackc/pgx/v4 v4.14.1
 	github.com/lozhkindm/celeritas v0.0.0-00010101000000-000000000000
+	github.com/ory/dockertest/v3 v3.8.1
+	github.com/upper/db/v4 v4.5.0
+	golang.org/x/crypto v0.0.0-20211209193657-4570a0811e8b
 )
 
 require (
 	github.com/Azure/go-ansiterm v0.0.0-20210617225240-d185dfc1b5a1 // indirect
 	github.com/CloudyKit/fastprinter v0.0.0-20200109182630-33d98a066a53 // indirect
-	github.com/DATA-DOG/go-sqlmock v1.5.0 // indirect
 	github.com/Microsoft/go-winio v0.5.1 // indirect
 	github.com/Nvveen/Gotty v0.0.0-20120604004816-cd527374f1e5 // indirect
 	github.com/alexedwards/scs/mysqlstore v0.0.0-20220216073957-c252878bcf5a // indirect
@@ -34,13 +39,11 @@ require (
 	github.com/hashicorp/go-multierror v1.1.0 // indirect
 	github.com/imdario/mergo v0.3.12 // indirect
 	github.com/jackc/chunkreader/v2 v2.0.1 // indirect
-	github.com/jackc/pgconn v1.10.1 // indirect
 	github.com/jackc/pgio v1.0.0 // indirect
 	github.com/jackc/pgpassfile v1.0.0 // indirect
 	github.com/jackc/pgproto3/v2 v2.2.0 // indirect
 	github.com/jackc/pgservicefile v0.0.0-20200714003250-2b9c44734f2b // indirect
 	github.com/jackc/pgtype v1.9.1 // indirect
-	github.com/jackc/pgx/v4 v4.14.1 // indirect
 	github.com/joho/godotenv v1.4.0 // indirect
 	github.com/lib/pq v1.10.4 // indirect
 	github.com/mitchellh/mapstructure v1.4.1 // indirect
@@ -48,17 +51,15 @@ require (
 	github.com/opencontainers/go-digest v1.0.0 // indirect
 	github.com/opencontainers/image-spec v1.0.2 // indirect
 	github.com/opencontainers/runc v1.0.2 // indirect
-	github.com/ory/dockertest/v3 v3.8.1 // indirect
 	github.com/pkg/errors v0.9.1 // indirect
 	github.com/sirupsen/logrus v1.8.1 // indirect
-	github.com/upper/db/v4 v4.5.0 // indirect
 	github.com/xeipuuv/gojsonpointer v0.0.0-20180127040702-4e3ac2762d5f // indirect
 	github.com/xeipuuv/gojsonreference v0.0.0-20180127040603-bd5ef7bd5415 // indirect
 	github.com/xeipuuv/gojsonschema v1.2.0 // indirect
 	go.uber.org/atomic v1.6.0 // indirect
-	golang.org/x/crypto v0.0.0-20211209193657-4570a0811e8b // indirect
 	golang.org/x/net v0.0.0-20211112202133-69e39bad7dc2 // indirect
 	golang.org/x/sys v0.0.0-20211210111614-af8b64212486 // indirect
 	golang.org/x/text v0.3.7 // indirect
+	golang.org/x/tools v0.1.10 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
 )
