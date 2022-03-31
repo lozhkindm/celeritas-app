@@ -23,6 +23,9 @@ func (a *application) routes() *chi.Mux {
 	a.routeGet("/users/logout", a.Handlers.UserLogout)
 	a.routeGet("/form", a.Handlers.ShowForm)
 	a.routePost("/form", a.Handlers.SubmitForm)
+	a.routeGet("/json", a.Handlers.JSON)
+	a.routeGet("/xml", a.Handlers.XML)
+	a.routeGet("/download-file", a.Handlers.DownloadFile)
 
 	a.routeGet("/create-user", func(w http.ResponseWriter, r *http.Request) {
 		usr := data.User{

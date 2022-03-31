@@ -63,17 +63,18 @@ func (h *Handlers) JSON(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *Handlers) XML(w http.ResponseWriter, r *http.Request) {
-	var payload struct {
+	type payload struct {
 		ID      int64    `xml:"id"`
 		Name    string   `xml:"name"`
 		Hobbies []string `xml:"hobbies>hobby"`
 	}
+	var pl payload
 
-	payload.ID = 123
-	payload.Name = "Ignat Senkin"
-	payload.Hobbies = []string{"CS", "Formula", "Cards"}
+	pl.ID = 123
+	pl.Name = "Ignat Senkin"
+	pl.Hobbies = []string{"CS", "Formula", "Cards"}
 
-	if err := h.App.WriteXML(w, http.StatusOK, payload); err != nil {
+	if err := h.App.WriteXML(w, http.StatusOK, pl); err != nil {
 		h.App.ErrorLog.Println(err)
 	}
 }
