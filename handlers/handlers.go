@@ -46,7 +46,7 @@ func (h *Handlers) Sessions(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func (h *Handlers) JSON(w http.ResponseWriter, r *http.Request) {
+func (h *Handlers) JSON(w http.ResponseWriter) {
 	var payload struct {
 		ID      int64    `json:"id"`
 		Name    string   `json:"name"`
@@ -62,7 +62,7 @@ func (h *Handlers) JSON(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func (h *Handlers) XML(w http.ResponseWriter, r *http.Request) {
+func (h *Handlers) XML(w http.ResponseWriter) {
 	type payload struct {
 		ID      int64    `xml:"id"`
 		Name    string   `xml:"name"`
