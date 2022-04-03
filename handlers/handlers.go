@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"fmt"
 	"net/http"
 
 	"myapp/data"
@@ -46,7 +47,7 @@ func (h *Handlers) Sessions(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func (h *Handlers) JSON(w http.ResponseWriter) {
+func (h *Handlers) JSON(w http.ResponseWriter, _ *http.Request) {
 	var payload struct {
 		ID      int64    `json:"id"`
 		Name    string   `json:"name"`
@@ -62,7 +63,7 @@ func (h *Handlers) JSON(w http.ResponseWriter) {
 	}
 }
 
-func (h *Handlers) XML(w http.ResponseWriter) {
+func (h *Handlers) XML(w http.ResponseWriter, _ *http.Request) {
 	type payload struct {
 		ID      int64    `xml:"id"`
 		Name    string   `xml:"name"`
@@ -81,4 +82,27 @@ func (h *Handlers) XML(w http.ResponseWriter) {
 
 func (h *Handlers) DownloadFile(w http.ResponseWriter, r *http.Request) {
 	h.App.DownloadFile(w, r, "./public/images", "celeritas.jpg")
+}
+
+func (h *Handlers) TestCrypto(w http.ResponseWriter, _ *http.Request) {
+	plaintext := "Hello, world"
+	fmt.Fprintf(w, "plaintext: %s\n", plaintext)
+
+	encrypted, err := h.encrypt(plaintext)
+	if err != nil {
+		h.App.ErrorLog.Println(err)
+		h.App.InternalError(w)
+		return
+	}
+
+	fmt.Fprintf(w, "encrypted: %s\n", encrypted)
+
+	decrypted, err := h.decrypt(encrypted)
+	if err != nil {
+		h.App.ErrorLog.Println(err)
+		h.App.InternalError(w)
+		return
+	}
+
+	fmt.Fprintf(w, "decrypted: %s", decrypted)
 }
