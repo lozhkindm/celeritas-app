@@ -27,6 +27,11 @@ func (a *application) routes() *chi.Mux {
 	a.routeGet("/xml", a.Handlers.XML)
 	a.routeGet("/download-file", a.Handlers.DownloadFile)
 	a.routeGet("/crypto", a.Handlers.TestCrypto)
+	a.routeGet("/cache-test", a.Handlers.ShowCachePage)
+	a.routePost("/api/save-in-cache", a.Handlers.SaveInCache)
+	a.routePost("/api/get-from-cache", a.Handlers.GetFromCache)
+	a.routePost("/api/delete-from-cache", a.Handlers.DeleteFromCache)
+	a.routePost("/api/empty-cache", a.Handlers.EmptyCache)
 
 	a.routeGet("/create-user", func(w http.ResponseWriter, r *http.Request) {
 		usr := data.User{
