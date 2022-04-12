@@ -15,7 +15,7 @@ Form
       class="d-block needs-validation"
       autocomplete="off" novalidate>
 
-    <input type="hidden" name="csrf_token" value="{{.CsrfToken}}">
+    <input type="hidden" name="csrf_token" value="{{.CSRFToken}}">
 
     <div class="mb-3">
         <label for="first_name" class="form-label">First Name</label>

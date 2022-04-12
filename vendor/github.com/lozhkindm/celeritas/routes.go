@@ -13,6 +13,7 @@ func (c *Celeritas) routes() http.Handler {
 	mux.Use(middleware.RealIP)
 	mux.Use(middleware.Recoverer)
 	mux.Use(c.SessionLoad)
+	mux.Use(c.CSRFToken)
 	if c.Debug {
 		mux.Use(middleware.Logger)
 	}

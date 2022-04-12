@@ -3,6 +3,7 @@ package render
 import (
 	"errors"
 	"fmt"
+	"github.com/justinas/nosurf"
 	"html/template"
 	"net/http"
 	"strings"
@@ -27,7 +28,7 @@ type TemplateData struct {
 	StringMap       map[string]string
 	FloatMap        map[string]float32
 	Data            map[string]interface{}
-	CsrfToken       string
+	CSRFToken       string
 	Port            string
 	ServerName      string
 	Secure          bool
@@ -55,6 +56,7 @@ func (r *Render) goPage(w http.ResponseWriter, req *http.Request, view string, d
 	if data != nil {
 		td = data.(*TemplateData)
 	}
+	r.defaultData(td, req)
 
 	if err := tmpl.Execute(w, td); err != nil {
 		return err
@@ -94,6 +96,7 @@ func (r *Render) defaultData(td *TemplateData, req *http.Request) {
 	td.Secure = r.Secure
 	td.ServerName = r.ServerName
 	td.Port = r.Port
+	td.CSRFToken = nosurf.Token(req)
 
 	if r.Session.Exists(req.Context(), "userID") {
 		td.IsAuthenticated = true

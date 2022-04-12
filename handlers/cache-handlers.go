@@ -2,6 +2,8 @@ package handlers
 
 import (
 	"net/http"
+
+	"github.com/justinas/nosurf"
 )
 
 func (h *Handlers) ShowCachePage(w http.ResponseWriter, r *http.Request) {
@@ -18,6 +20,11 @@ func (h *Handlers) SaveInCache(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if err := h.App.ReadJSON(w, r, &input); err != nil {
+		h.App.InternalError(w)
+		return
+	}
+
+	if !nosurf.VerifyToken(nosurf.Token(r), input.CSRF) {
 		h.App.InternalError(w)
 		return
 	}
@@ -57,6 +64,11 @@ func (h *Handlers) GetFromCache(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	if !nosurf.VerifyToken(nosurf.Token(r), input.CSRF) {
+		h.App.InternalError(w)
+		return
+	}
+
 	cacheVal, err := h.App.Cache.Get(input.Name)
 	if err != nil {
 		res.Error = true
@@ -79,6 +91,11 @@ func (h *Handlers) DeleteFromCache(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if err := h.App.ReadJSON(w, r, &input); err != nil {
+		h.App.InternalError(w)
+		return
+	}
+
+	if !nosurf.VerifyToken(nosurf.Token(r), input.CSRF) {
 		h.App.InternalError(w)
 		return
 	}
@@ -107,6 +124,11 @@ func (h *Handlers) EmptyCache(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if err := h.App.ReadJSON(w, r, &input); err != nil {
+		h.App.InternalError(w)
+		return
+	}
+
+	if !nosurf.VerifyToken(nosurf.Token(r), input.CSRF) {
 		h.App.InternalError(w)
 		return
 	}

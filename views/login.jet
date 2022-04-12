@@ -9,7 +9,7 @@
     <h2 class="mt-5 text-center">Login</h2>
     <hr>
     <form action="/users/login" method="post" name="login-form" id="login-form" class="d-block needs-validation" autocomplete="off" novalidate>
-        <input type="hidden" name="csrf_token" value="{{.CsrfToken}}">
+        <input type="hidden" name="csrf_token" value="{{.CSRFToken}}">
 
         <div class="mb-3">
             <label for="email" class="form-label">Email</label>
