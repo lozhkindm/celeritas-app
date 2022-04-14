@@ -3,6 +3,7 @@ package handlers
 import (
 	"fmt"
 	"net/http"
+	"time"
 
 	"myapp/data"
 
@@ -16,6 +17,7 @@ type Handlers struct {
 }
 
 func (h *Handlers) Home(w http.ResponseWriter, r *http.Request) {
+	defer h.App.LoadTime(time.Now())
 	if err := h.render(w, r, "home", nil, nil); err != nil {
 		h.App.ErrorLog.Println("error rendering:", err)
 	}

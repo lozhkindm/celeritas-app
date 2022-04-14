@@ -3,13 +3,13 @@ package render
 import (
 	"errors"
 	"fmt"
-	"github.com/justinas/nosurf"
 	"html/template"
 	"net/http"
 	"strings"
 
 	"github.com/CloudyKit/jet/v6"
 	"github.com/alexedwards/scs/v2"
+	"github.com/justinas/nosurf"
 )
 
 type Render struct {

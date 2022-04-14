@@ -1,9 +1,10 @@
 package celeritas
 
 import (
-	"github.com/justinas/nosurf"
 	"net/http"
 	"strconv"
+
+	"github.com/justinas/nosurf"
 )
 
 func (c *Celeritas) SessionLoad(next http.Handler) http.Handler {

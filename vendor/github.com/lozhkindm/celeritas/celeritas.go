@@ -71,15 +71,25 @@ func (c *Celeritas) New(rootPath string) error {
 	c.RootPath = rootPath
 	c.createConfig()
 	c.Routes = c.routes().(*chi.Mux)
-	c.JetViews = jet.NewSet(
-		jet.NewOSFileSystemLoader(fmt.Sprintf("%s/views", rootPath)),
-		jet.InDevelopmentMode(),
-	)
+	c.prepareJetViews(rootPath)
 	c.createSession()
 	c.createRenderer()
 	c.EncryptionKey = os.Getenv("KEY")
 
 	return nil
+}
+
+func (c *Celeritas) prepareJetViews(rootPath string) {
+	if c.Debug {
+		c.JetViews = jet.NewSet(
+			jet.NewOSFileSystemLoader(fmt.Sprintf("%s/views", rootPath)),
+			jet.InDevelopmentMode(),
+		)
+	} else {
+		c.JetViews = jet.NewSet(
+			jet.NewOSFileSystemLoader(fmt.Sprintf("%s/views", rootPath)),
+		)
+	}
 }
 
 func (c *Celeritas) ListenAndServe() {
