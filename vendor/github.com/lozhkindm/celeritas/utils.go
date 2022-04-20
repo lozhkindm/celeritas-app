@@ -12,5 +12,5 @@ func (c *Celeritas) LoadTime(start time.Time) {
 	fn := runtime.FuncForPC(pc)
 	regexpFn := regexp.MustCompile(`^.*\.(.*)$`)
 	caller := regexpFn.ReplaceAllString(fn.Name(), "$1")
-	c.InfoLog.Printf("Load Time: %s took %s\n", caller, elapsed)
+	c.InfoLog.Printf("Load Time: %q took %s\n", caller, elapsed)
 }

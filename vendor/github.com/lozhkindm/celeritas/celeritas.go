@@ -14,9 +14,11 @@ import (
 
 	"github.com/CloudyKit/jet/v6"
 	"github.com/alexedwards/scs/v2"
+	"github.com/dgraph-io/badger/v3"
 	"github.com/go-chi/chi/v5"
 	"github.com/gomodule/redigo/redis"
 	"github.com/joho/godotenv"
+	"github.com/robfig/cron/v3"
 )
 
 const version = "1.0.0"
@@ -35,7 +37,10 @@ type Celeritas struct {
 	Cache         cache.Cache
 	JetViews      *jet.Set
 	EncryptionKey string
+	Scheduler     *cron.Cron
 	config        config
+	redisPool     *redis.Pool
+	badgerConn    *badger.DB
 }
 
 type config struct {
@@ -65,7 +70,10 @@ func (c *Celeritas) New(rootPath string) error {
 
 	c.createLoggers()
 	c.createDB()
-	c.createCache()
+	c.Scheduler = cron.New()
+	if err := c.createCache(); err != nil {
+		return err
+	}
 	c.Debug, _ = strconv.ParseBool(os.Getenv("DEBUG"))
 	c.Version = version
 	c.RootPath = rootPath
@@ -94,8 +102,14 @@ func (c *Celeritas) prepareJetViews(rootPath string) {
 
 func (c *Celeritas) ListenAndServe() {
 	defer func() {
-		if err := c.DB.Pool.Close(); err != nil {
-			c.ErrorLog.Fatal(err)
+		if c.DB.Pool != nil {
+			_ = c.DB.Pool.Close()
+		}
+		if c.redisPool != nil {
+			_ = c.redisPool.Close()
+		}
+		if c.badgerConn != nil {
+			_ = c.badgerConn.Close()
 		}
 	}()
 	srv := &http.Server{
@@ -202,7 +216,7 @@ func (c *Celeritas) createSession() {
 	}
 	switch s.SessionType {
 	case "redis":
-		s.RedisPool = c.Cache.(*cache.RedisCache).Conn
+		s.RedisPool = c.redisPool
 	case "mysql", "mariadb", "postgres", "postgresql":
 		s.DBPool = c.DB.Pool
 	}
@@ -213,23 +227,51 @@ func (c *Celeritas) createDB() {
 	if dbType := os.Getenv("DATABASE_TYPE"); dbType != "" {
 		db, err := c.OpenDB(dbType, c.BuildDSN())
 		if err != nil {
-			c.ErrorLog.Fatalln(err)
+			c.ErrorLog.Fatal(err)
 		}
 		c.DB = database{DataType: dbType, Pool: db}
 	}
 }
 
-func (c *Celeritas) createCache() {
+func (c *Celeritas) createCache() error {
 	if os.Getenv("CACHE") == "redis" || os.Getenv("SESSION_TYPE") == "redis" {
 		c.Cache = c.createRedisCacheClient()
 	}
+	if os.Getenv("CACHE") == "badger" {
+		client, err := c.createBadgerCacheClient()
+		if err != nil {
+			return err
+		}
+
+		_, err = c.Scheduler.AddFunc("@daily", func() {
+			if err := client.Conn.RunValueLogGC(0.7); err != nil {
+				c.ErrorLog.Println(err)
+			}
+		})
+		if err != nil {
+			return err
+		}
+
+		c.Cache = client
+	}
+	return nil
 }
 
 func (c *Celeritas) createRedisCacheClient() *cache.RedisCache {
+	c.redisPool = c.createRedisPool()
 	return &cache.RedisCache{
-		Conn:   c.createRedisPool(),
+		Conn:   c.redisPool,
 		Prefix: c.config.redis.prefix,
 	}
+}
+
+func (c *Celeritas) createBadgerCacheClient() (*cache.BadgerCache, error) {
+	conn, err := c.createBadgerConn()
+	if err != nil {
+		return nil, err
+	}
+	c.badgerConn = conn
+	return &cache.BadgerCache{Conn: c.badgerConn}, nil
 }
 
 func (c *Celeritas) createRedisPool() *redis.Pool {
@@ -249,4 +291,8 @@ func (c *Celeritas) createRedisPool() *redis.Pool {
 			return err
 		},
 	}
+}
+
+func (c *Celeritas) createBadgerConn() (*badger.DB, error) {
+	return badger.Open(badger.DefaultOptions(fmt.Sprintf("%s/tmp/badger", c.RootPath)))
 }
