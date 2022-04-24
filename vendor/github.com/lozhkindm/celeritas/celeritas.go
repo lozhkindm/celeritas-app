@@ -9,6 +9,7 @@ import (
 	"time"
 
 	"github.com/lozhkindm/celeritas/cache"
+	"github.com/lozhkindm/celeritas/mailer"
 	"github.com/lozhkindm/celeritas/render"
 	"github.com/lozhkindm/celeritas/session"
 
@@ -38,6 +39,7 @@ type Celeritas struct {
 	JetViews      *jet.Set
 	EncryptionKey string
 	Scheduler     *cron.Cron
+	Mail          mailer.Mail
 	config        config
 	redisPool     *redis.Pool
 	badgerConn    *badger.DB
@@ -55,7 +57,7 @@ type config struct {
 func (c *Celeritas) New(rootPath string) error {
 	pathConfig := initPaths{
 		rootPath:    rootPath,
-		folderNames: []string{"handlers", "migrations", "views", "data", "public", "tmp", "logs", "middlewares"},
+		folderNames: []string{"handlers", "migrations", "views", "mails", "data", "public", "tmp", "logs", "middlewares"},
 	}
 
 	if err := c.init(pathConfig); err != nil {
@@ -83,6 +85,7 @@ func (c *Celeritas) New(rootPath string) error {
 	c.createSession()
 	c.createRenderer()
 	c.EncryptionKey = os.Getenv("KEY")
+	c.createMailer()
 
 	return nil
 }
@@ -295,4 +298,28 @@ func (c *Celeritas) createRedisPool() *redis.Pool {
 
 func (c *Celeritas) createBadgerConn() (*badger.DB, error) {
 	return badger.Open(badger.DefaultOptions(fmt.Sprintf("%s/tmp/badger", c.RootPath)))
+}
+
+func (c *Celeritas) createMailer() {
+	port, err := strconv.Atoi(os.Getenv("SMTP_PORT"))
+	if err != nil {
+		c.ErrorLog.Fatal(err)
+	}
+
+	c.Mail = mailer.Mail{
+		Domain:       os.Getenv("MAIL_DOMAIN"),
+		TemplatesDir: fmt.Sprintf("%s/mails", c.RootPath),
+		Host:         os.Getenv("SMTP_HOST"),
+		Port:         port,
+		Username:     os.Getenv("SMTP_USERNAME"),
+		Password:     os.Getenv("SMTP_PASSWORD"),
+		Encryption:   os.Getenv("SMTP_ENCRYPTION"),
+		FromAddress:  os.Getenv("FROM_NAME"),
+		FromName:     os.Getenv("FROM_ADDRESS"),
+		Jobs:         make(chan mailer.Message, 20),
+		Results:      make(chan mailer.Result, 20),
+		API:          os.Getenv("MAILER_API"),
+		APIKey:       os.Getenv("MAILER_KEY"),
+		APIUrl:       os.Getenv("MAILER_URL"),
+	}
 }
