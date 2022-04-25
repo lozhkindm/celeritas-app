@@ -87,6 +87,8 @@ func (c *Celeritas) New(rootPath string) error {
 	c.EncryptionKey = os.Getenv("KEY")
 	c.createMailer()
 
+	go c.Mail.ListenForMail()
+
 	return nil
 }
 

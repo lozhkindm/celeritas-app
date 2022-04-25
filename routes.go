@@ -8,6 +8,7 @@ import (
 	"myapp/data"
 
 	"github.com/go-chi/chi/v5"
+	"github.com/lozhkindm/celeritas/mailer"
 )
 
 func (a *application) routes() *chi.Mux {
@@ -33,6 +34,41 @@ func (a *application) routes() *chi.Mux {
 	a.routePost("/api/delete-from-cache", a.Handlers.DeleteFromCache)
 	a.routePost("/api/empty-cache", a.Handlers.EmptyCache)
 
+	a.routeGet("/test-mail-channel", func(w http.ResponseWriter, r *http.Request) {
+		msg := mailer.Message{
+			From:        "ignat@senkin.com",
+			To:          "senka@ignatov.com",
+			Subject:     "Privet, Senka",
+			Template:    "test",
+			Attachments: nil,
+			Data:        nil,
+		}
+
+		a.App.Mail.Jobs <- msg
+		res := <-a.App.Mail.Results
+		if res.Error != nil {
+			a.App.ErrorLog.Println(res.Error)
+		}
+
+		_, _ = fmt.Fprintf(w, "mail is sent")
+	})
+	a.routeGet("/test-mail-func", func(w http.ResponseWriter, r *http.Request) {
+		msg := mailer.Message{
+			From:        "ignat@senkin.com",
+			To:          "senka@ignatov.com",
+			Subject:     "Privet, Senka (func)",
+			Template:    "test",
+			Attachments: nil,
+			Data:        nil,
+		}
+
+		if err := a.App.Mail.SendSMTPMessage(msg); err != nil {
+			a.App.ErrorLog.Println(err)
+		}
+
+		_, _ = fmt.Fprintf(w, "mail is sent")
+	})
+
 	a.routeGet("/create-user", func(w http.ResponseWriter, r *http.Request) {
 		usr := data.User{
 			FirstName: a.App.RandStr(10),
@@ -46,7 +82,7 @@ func (a *application) routes() *chi.Mux {
 			a.App.ErrorLog.Println(err)
 			return
 		}
-		fmt.Fprintf(w, "%d: %s", id, usr.FirstName)
+		_, _ = fmt.Fprintf(w, "%d: %s", id, usr.FirstName)
 	})
 	a.routeGet("/get-all-users", func(w http.ResponseWriter, r *http.Request) {
 		users, err := a.Models.Users.GetAll()
@@ -55,7 +91,7 @@ func (a *application) routes() *chi.Mux {
 			return
 		}
 		for _, u := range users {
-			fmt.Fprintf(w, "%+v", u)
+			_, _ = fmt.Fprintf(w, "%+v", u)
 		}
 	})
 	a.routeGet("/get-user/{id}", func(w http.ResponseWriter, r *http.Request) {
@@ -65,7 +101,7 @@ func (a *application) routes() *chi.Mux {
 			a.App.ErrorLog.Println(err)
 			return
 		}
-		fmt.Fprintf(w, "%+v", user)
+		_, _ = fmt.Fprintf(w, "%+v", user)
 	})
 	a.routeGet("/update-user/{id}", func(w http.ResponseWriter, r *http.Request) {
 		id, _ := strconv.Atoi(chi.URLParam(r, "id"))
@@ -80,7 +116,7 @@ func (a *application) routes() *chi.Mux {
 		user.FirstName = ""
 		user.Validate(validator)
 		if !validator.IsValid() {
-			fmt.Fprint(w, "failed validation")
+			_, _ = fmt.Fprint(w, "failed validation")
 			return
 		}
 
@@ -88,7 +124,7 @@ func (a *application) routes() *chi.Mux {
 			a.App.ErrorLog.Println(err)
 			return
 		}
-		fmt.Fprintf(w, "%+v", user)
+		_, _ = fmt.Fprintf(w, "%+v", user)
 	})
 
 	// static routes
