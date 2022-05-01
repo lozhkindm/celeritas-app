@@ -149,6 +149,17 @@ func (u *User) CheckPassword(password string) (bool, error) {
 	return true, nil
 }
 
+func (u *User) CheckRememberToken(id int, token string) bool {
+	var (
+		tkn RememberToken
+		rt  = RememberToken{}
+	)
+	coll := upper.Collection(rt.Table())
+	res := coll.Find(up.Cond{"user_id": id, "remember_token": token})
+	err := res.One(&tkn)
+	return err == nil
+}
+
 func getUserToken(user User) (Token, error) {
 	var token Token
 
