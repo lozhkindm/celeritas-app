@@ -75,12 +75,8 @@ func (c *Celeritas) DownloadFile(w http.ResponseWriter, r *http.Request, pathToF
 	http.ServeFile(w, r, file)
 }
 
-func (c *Celeritas) NotFound(w http.ResponseWriter) {
-	c.ErrorStatus(w, http.StatusNotFound)
-}
-
-func (c *Celeritas) InternalError(w http.ResponseWriter) {
-	c.ErrorStatus(w, http.StatusInternalServerError)
+func (c *Celeritas) BadRequest(w http.ResponseWriter) {
+	c.ErrorStatus(w, http.StatusBadRequest)
 }
 
 func (c *Celeritas) Unauthorized(w http.ResponseWriter) {
@@ -89,6 +85,14 @@ func (c *Celeritas) Unauthorized(w http.ResponseWriter) {
 
 func (c *Celeritas) Forbidden(w http.ResponseWriter) {
 	c.ErrorStatus(w, http.StatusForbidden)
+}
+
+func (c *Celeritas) NotFound(w http.ResponseWriter) {
+	c.ErrorStatus(w, http.StatusNotFound)
+}
+
+func (c *Celeritas) InternalError(w http.ResponseWriter) {
+	c.ErrorStatus(w, http.StatusInternalServerError)
 }
 
 func (c *Celeritas) ErrorStatus(w http.ResponseWriter, status int) {

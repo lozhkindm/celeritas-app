@@ -23,6 +23,10 @@ func (h *Handlers) sessionGet(ctx context.Context, key string) interface{} {
 	return h.App.Session.Get(ctx, key)
 }
 
+func (h *Handlers) sessionGetString(ctx context.Context, key string) string {
+	return h.App.Session.GetString(ctx, key)
+}
+
 func (h *Handlers) sessionRemove(ctx context.Context, key string) {
 	h.App.Session.Remove(ctx, key)
 }

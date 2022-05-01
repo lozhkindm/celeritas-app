@@ -40,7 +40,7 @@ func (h *Handlers) JetPage(w http.ResponseWriter, r *http.Request) {
 func (h *Handlers) Sessions(w http.ResponseWriter, r *http.Request) {
 	myData := "bar"
 	h.sessionPut(r.Context(), "foo", myData)
-	myValue := h.App.Session.GetString(r.Context(), "foo")
+	myValue := h.sessionGetString(r.Context(), "foo")
 	vars := make(jet.VarMap)
 	vars.Set("foo", myValue)
 
