@@ -13,6 +13,7 @@ import (
 
 func (a *application) routes() *chi.Mux {
 	// middlewares
+	a.routeUse(a.Middlewares.CheckRemember)
 
 	// routes
 	a.routeGet("/", a.Handlers.Home)
