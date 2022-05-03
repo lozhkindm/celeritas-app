@@ -11,6 +11,7 @@ import (
 func (h *Handlers) UserLogin(w http.ResponseWriter, r *http.Request) {
 	if err := h.render(w, r, "login", nil, nil); err != nil {
 		h.App.ErrorLog.Println(err)
+		h.App.InternalError(w)
 	}
 }
 
@@ -82,4 +83,11 @@ func (h *Handlers) UserLogout(w http.ResponseWriter, r *http.Request) {
 		h.App.ErrorLog.Println(err)
 	}
 	http.Redirect(w, r, "/users/login", http.StatusSeeOther)
+}
+
+func (h *Handlers) Forgot(w http.ResponseWriter, r *http.Request) {
+	if err := h.render(w, r, "forgot", nil, nil); err != nil {
+		h.App.ErrorLog.Println(err)
+		h.App.InternalError(w)
+	}
 }

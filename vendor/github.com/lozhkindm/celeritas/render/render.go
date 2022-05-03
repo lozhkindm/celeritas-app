@@ -32,6 +32,8 @@ type TemplateData struct {
 	Port            string
 	ServerName      string
 	Secure          bool
+	Error           string
+	Flash           string
 }
 
 func (r *Render) Page(w http.ResponseWriter, req *http.Request, view string, vars, data interface{}) error {
