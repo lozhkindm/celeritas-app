@@ -91,3 +91,7 @@ func (h *Handlers) Forgot(w http.ResponseWriter, r *http.Request) {
 		h.App.InternalError(w)
 	}
 }
+
+func (h *Handlers) PostForgot(w http.ResponseWriter, r *http.Request) {
+
+}
