@@ -40,9 +40,17 @@ type Celeritas struct {
 	EncryptionKey string
 	Scheduler     *cron.Cron
 	Mail          mailer.Mail
+	Server        Server
 	config        config
 	redisPool     *redis.Pool
 	badgerConn    *badger.DB
+}
+
+type Server struct {
+	Name   string
+	Port   string
+	Secure bool
+	URL    string
 }
 
 type config struct {
@@ -86,6 +94,7 @@ func (c *Celeritas) New(rootPath string) error {
 	c.createRenderer()
 	c.EncryptionKey = os.Getenv("KEY")
 	c.createMailer()
+	c.createServer()
 
 	go c.Mail.ListenForMail()
 
@@ -323,5 +332,15 @@ func (c *Celeritas) createMailer() {
 		API:          os.Getenv("MAILER_API"),
 		APIKey:       os.Getenv("MAILER_KEY"),
 		APIUrl:       os.Getenv("MAILER_URL"),
+	}
+}
+
+func (c *Celeritas) createServer() {
+	secure, _ := strconv.ParseBool(os.Getenv("SECURE"))
+	c.Server = Server{
+		Name:   os.Getenv("SERVER_NAME"),
+		Port:   os.Getenv("PORT"),
+		Secure: secure,
+		URL:    os.Getenv("APP_URL"),
 	}
 }

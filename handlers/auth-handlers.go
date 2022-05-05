@@ -3,9 +3,13 @@ package handlers
 import (
 	"crypto/sha256"
 	"encoding/base64"
+	"fmt"
 	"net/http"
 
 	"myapp/data"
+
+	"github.com/lozhkindm/celeritas/mailer"
+	"github.com/lozhkindm/celeritas/urlsigner"
 )
 
 func (h *Handlers) UserLogin(w http.ResponseWriter, r *http.Request) {
@@ -93,5 +97,42 @@ func (h *Handlers) Forgot(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *Handlers) PostForgot(w http.ResponseWriter, r *http.Request) {
+	if err := r.ParseForm(); err != nil {
+		h.App.BadRequest(w)
+		return
+	}
 
+	var u *data.User
+	email := r.Form.Get("email")
+	u, err := u.GetByEmail(email)
+	if err != nil {
+		h.App.BadRequest(w)
+		return
+	}
+
+	link := fmt.Sprintf("%s/users/reset-password?email=%s", h.App.Server.URL, email)
+	signer := urlsigner.Signer{Secret: []byte(h.App.EncryptionKey)}
+	signedLink := signer.GenerateTokenFromString(link)
+
+	var msgData struct {
+		Link string
+	}
+	msgData.Link = signedLink
+	msg := mailer.Message{
+		From:     "senka@ignatov.com",
+		FromName: "Senka",
+		To:       "ignat@senkin.com",
+		Subject:  "Hi, Ignat!",
+		Template: "reset-password",
+		Data:     msgData,
+	}
+
+	h.App.Mail.Jobs <- msg
+	res := <-h.App.Mail.Results
+	if res.Error != nil {
+		h.App.InternalError(w)
+		return
+	}
+
+	http.Redirect(w, r, "/users/login", http.StatusSeeOther)
 }

@@ -11,7 +11,7 @@ require (
 	github.com/jackc/pgconn v1.10.1
 	github.com/jackc/pgx/v4 v4.14.1
 	github.com/justinas/nosurf v1.1.1
-	github.com/lozhkindm/celeritas v0.0.0-00010101000000-000000000000
+	github.com/lozhkindm/celeritas v0.0.0-20220506141638-e23539ec9e75
 	github.com/ory/dockertest/v3 v3.8.1
 	github.com/upper/db/v4 v4.5.0
 	golang.org/x/crypto v0.0.0-20211209193657-4570a0811e8b
@@ -31,6 +31,7 @@ require (
 	github.com/alexedwards/scs/v2 v2.5.0 // indirect
 	github.com/andybalholm/cascadia v1.1.0 // indirect
 	github.com/asaskevich/govalidator v0.0.0-20210307081110-f21760c49a8d // indirect
+	github.com/bwmarrin/go-alone v0.0.0-20190806015146-742bb55d1631 // indirect
 	github.com/cenkalti/backoff/v4 v4.1.2 // indirect
 	github.com/cespare/xxhash v1.1.0 // indirect
 	github.com/cespare/xxhash/v2 v2.1.1 // indirect

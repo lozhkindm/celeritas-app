@@ -47,6 +47,9 @@ github.com/andybalholm/cascadia
 # github.com/asaskevich/govalidator v0.0.0-20210307081110-f21760c49a8d
 ## explicit; go 1.13
 github.com/asaskevich/govalidator
+# github.com/bwmarrin/go-alone v0.0.0-20190806015146-742bb55d1631
+## explicit
+github.com/bwmarrin/go-alone
 # github.com/cenkalti/backoff/v4 v4.1.2
 ## explicit; go 1.13
 github.com/cenkalti/backoff/v4
@@ -217,13 +220,14 @@ github.com/klauspost/compress/zstd/internal/xxhash
 github.com/lib/pq
 github.com/lib/pq/oid
 github.com/lib/pq/scram
-# github.com/lozhkindm/celeritas v0.0.0-00010101000000-000000000000 => ../celeritas
+# github.com/lozhkindm/celeritas v0.0.0-20220506141638-e23539ec9e75 => ../celeritas
 ## explicit; go 1.17
 github.com/lozhkindm/celeritas
 github.com/lozhkindm/celeritas/cache
 github.com/lozhkindm/celeritas/mailer
 github.com/lozhkindm/celeritas/render
 github.com/lozhkindm/celeritas/session
+github.com/lozhkindm/celeritas/urlsigner
 # github.com/mailgun/mailgun-go/v4 v4.4.1
 ## explicit; go 1.13
 github.com/mailgun/mailgun-go/v4
@@ -340,6 +344,7 @@ go.uber.org/atomic
 # golang.org/x/crypto v0.0.0-20211209193657-4570a0811e8b
 ## explicit; go 1.17
 golang.org/x/crypto/bcrypt
+golang.org/x/crypto/blake2b
 golang.org/x/crypto/blowfish
 golang.org/x/crypto/pbkdf2
 # golang.org/x/net v0.0.0-20211112202133-69e39bad7dc2
@@ -351,6 +356,7 @@ golang.org/x/net/internal/timeseries
 golang.org/x/net/trace
 # golang.org/x/sys v0.0.0-20211210111614-af8b64212486
 ## explicit; go 1.17
+golang.org/x/sys/cpu
 golang.org/x/sys/internal/unsafeheader
 golang.org/x/sys/unix
 golang.org/x/sys/windows
