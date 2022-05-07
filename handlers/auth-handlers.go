@@ -5,9 +5,11 @@ import (
 	"encoding/base64"
 	"fmt"
 	"net/http"
+	"time"
 
 	"myapp/data"
 
+	"github.com/CloudyKit/jet/v6"
 	"github.com/lozhkindm/celeritas/mailer"
 	"github.com/lozhkindm/celeritas/urlsigner"
 )
@@ -121,8 +123,8 @@ func (h *Handlers) PostForgot(w http.ResponseWriter, r *http.Request) {
 	msg := mailer.Message{
 		From:     "senka@ignatov.com",
 		FromName: "Senka",
-		To:       "ignat@senkin.com",
-		Subject:  "Hi, Ignat!",
+		To:       u.Email,
+		Subject:  "Reset password",
 		Template: "reset-password",
 		Data:     msgData,
 	}
@@ -135,4 +137,32 @@ func (h *Handlers) PostForgot(w http.ResponseWriter, r *http.Request) {
 	}
 
 	http.Redirect(w, r, "/users/login", http.StatusSeeOther)
+}
+
+func (h *Handlers) ResetPasswordForm(w http.ResponseWriter, r *http.Request) {
+	email := r.URL.Query().Get("email")
+	url := fmt.Sprintf("%s%s", h.App.Server.URL, r.RequestURI)
+
+	signer := urlsigner.Signer{Secret: []byte(h.App.EncryptionKey)}
+	if !signer.VerifyToken(url) {
+		h.App.Unauthorized(w)
+		return
+	}
+	if signer.Expired(url, 60*time.Minute) {
+		h.App.Unauthorized(w)
+		return
+	}
+
+	cryptoEmail, err := h.encrypt(email)
+	if err != nil {
+		h.App.InternalError(w)
+		return
+	}
+
+	vars := make(jet.VarMap)
+	vars.Set("email", cryptoEmail)
+	if err := h.render(w, r, "reset-password", vars, nil); err != nil {
+		h.App.InternalError(w)
+		return
+	}
 }
