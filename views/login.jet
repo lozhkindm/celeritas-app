@@ -8,6 +8,11 @@
 {{block pageContent()}}
     <h2 class="mt-5 text-center">Login</h2>
     <hr>
+    {{if .Flash != ""}}
+        <div class="alert alert-info text-center">
+            {{.Flash}}
+        </div>
+    {{end}}
     <form action="/users/login" method="post" name="login-form" id="login-form" class="d-block needs-validation" autocomplete="off" novalidate>
         <input type="hidden" name="csrf_token" value="{{.CSRFToken}}">
 
