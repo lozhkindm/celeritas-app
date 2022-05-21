@@ -155,6 +155,9 @@ github.com/google/flatbuffers/go
 # github.com/google/shlex v0.0.0-20191202100458-e7afc7fbc510
 ## explicit; go 1.13
 github.com/google/shlex
+# github.com/google/uuid v1.3.0
+## explicit
+github.com/google/uuid
 # github.com/gorilla/css v1.0.0
 ## explicit
 github.com/gorilla/css/scanner
@@ -201,7 +204,7 @@ github.com/jackc/pgx/v4/stdlib
 # github.com/joho/godotenv v1.4.0
 ## explicit; go 1.12
 github.com/joho/godotenv
-# github.com/json-iterator/go v1.1.10
+# github.com/json-iterator/go v1.1.12
 ## explicit; go 1.12
 github.com/json-iterator/go
 # github.com/justinas/nosurf v1.1.1
@@ -213,8 +216,12 @@ github.com/klauspost/compress
 github.com/klauspost/compress/fse
 github.com/klauspost/compress/huff0
 github.com/klauspost/compress/internal/snapref
+github.com/klauspost/compress/s2
 github.com/klauspost/compress/zstd
 github.com/klauspost/compress/zstd/internal/xxhash
+# github.com/klauspost/cpuid v1.3.1
+## explicit; go 1.12
+github.com/klauspost/cpuid
 # github.com/lib/pq v1.10.4
 ## explicit; go 1.13
 github.com/lib/pq
@@ -224,6 +231,8 @@ github.com/lib/pq/scram
 ## explicit; go 1.17
 github.com/lozhkindm/celeritas
 github.com/lozhkindm/celeritas/cache
+github.com/lozhkindm/celeritas/filesystem
+github.com/lozhkindm/celeritas/filesystem/minio
 github.com/lozhkindm/celeritas/mailer
 github.com/lozhkindm/celeritas/render
 github.com/lozhkindm/celeritas/session
@@ -232,6 +241,28 @@ github.com/lozhkindm/celeritas/urlsigner
 ## explicit; go 1.13
 github.com/mailgun/mailgun-go/v4
 github.com/mailgun/mailgun-go/v4/events
+# github.com/minio/md5-simd v1.1.0
+## explicit; go 1.14
+github.com/minio/md5-simd
+# github.com/minio/minio-go/v7 v7.0.26
+## explicit; go 1.17
+github.com/minio/minio-go/v7
+github.com/minio/minio-go/v7/pkg/credentials
+github.com/minio/minio-go/v7/pkg/encrypt
+github.com/minio/minio-go/v7/pkg/lifecycle
+github.com/minio/minio-go/v7/pkg/notification
+github.com/minio/minio-go/v7/pkg/replication
+github.com/minio/minio-go/v7/pkg/s3utils
+github.com/minio/minio-go/v7/pkg/set
+github.com/minio/minio-go/v7/pkg/signer
+github.com/minio/minio-go/v7/pkg/sse
+github.com/minio/minio-go/v7/pkg/tags
+# github.com/minio/sha256-simd v0.1.1
+## explicit; go 1.12
+github.com/minio/sha256-simd
+# github.com/mitchellh/go-homedir v1.1.0
+## explicit
+github.com/mitchellh/go-homedir
 # github.com/mitchellh/mapstructure v1.4.1
 ## explicit; go 1.14
 github.com/mitchellh/mapstructure
@@ -242,8 +273,8 @@ github.com/moby/term/windows
 # github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd
 ## explicit
 github.com/modern-go/concurrent
-# github.com/modern-go/reflect2 v1.0.1
-## explicit
+# github.com/modern-go/reflect2 v1.0.2
+## explicit; go 1.12
 github.com/modern-go/reflect2
 # github.com/opencontainers/go-digest v1.0.0
 ## explicit; go 1.13
@@ -286,6 +317,9 @@ github.com/pkg/errors
 # github.com/robfig/cron/v3 v3.0.1
 ## explicit; go 1.12
 github.com/robfig/cron/v3
+# github.com/rs/xid v1.2.1
+## explicit
+github.com/rs/xid
 # github.com/sendgrid/rest v2.6.3+incompatible
 ## explicit
 github.com/sendgrid/rest
@@ -343,6 +377,7 @@ go.opencensus.io/trace/tracestate
 go.uber.org/atomic
 # golang.org/x/crypto v0.0.0-20211209193657-4570a0811e8b
 ## explicit; go 1.17
+golang.org/x/crypto/argon2
 golang.org/x/crypto/bcrypt
 golang.org/x/crypto/blake2b
 golang.org/x/crypto/blowfish
@@ -352,7 +387,10 @@ golang.org/x/crypto/pbkdf2
 golang.org/x/net/context
 golang.org/x/net/html
 golang.org/x/net/html/atom
+golang.org/x/net/http/httpguts
+golang.org/x/net/idna
 golang.org/x/net/internal/timeseries
+golang.org/x/net/publicsuffix
 golang.org/x/net/trace
 # golang.org/x/sys v0.0.0-20211210111614-af8b64212486
 ## explicit; go 1.17
@@ -406,6 +444,9 @@ google.golang.org/protobuf/reflect/protoregistry
 google.golang.org/protobuf/runtime/protoiface
 google.golang.org/protobuf/runtime/protoimpl
 google.golang.org/protobuf/types/descriptorpb
+# gopkg.in/ini.v1 v1.57.0
+## explicit
+gopkg.in/ini.v1
 # gopkg.in/yaml.v2 v2.4.0
 ## explicit; go 1.15
 gopkg.in/yaml.v2

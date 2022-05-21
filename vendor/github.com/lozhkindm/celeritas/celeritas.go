@@ -9,6 +9,7 @@ import (
 	"time"
 
 	"github.com/lozhkindm/celeritas/cache"
+	"github.com/lozhkindm/celeritas/filesystem/minio"
 	"github.com/lozhkindm/celeritas/mailer"
 	"github.com/lozhkindm/celeritas/render"
 	"github.com/lozhkindm/celeritas/session"
@@ -41,6 +42,7 @@ type Celeritas struct {
 	Scheduler     *cron.Cron
 	Mail          mailer.Mail
 	Server        Server
+	FileSystems   map[string]interface{}
 	config        config
 	redisPool     *redis.Pool
 	badgerConn    *badger.DB
@@ -95,6 +97,7 @@ func (c *Celeritas) New(rootPath string) error {
 	c.EncryptionKey = os.Getenv("KEY")
 	c.createMailer()
 	c.createServer()
+	c.createFileSystem()
 
 	go c.Mail.ListenForMail()
 
@@ -342,5 +345,20 @@ func (c *Celeritas) createServer() {
 		Port:   os.Getenv("PORT"),
 		Secure: secure,
 		URL:    os.Getenv("APP_URL"),
+	}
+}
+
+func (c *Celeritas) createFileSystem() {
+	c.FileSystems = make(map[string]interface{})
+	if os.Getenv("MINIO_SECRET") != "" {
+		usessl, _ := strconv.ParseBool(os.Getenv("MINIO_USESSL"))
+		c.FileSystems["MINIO"] = minio.Minio{
+			Endpoint: os.Getenv("MINIO_ENDPOINT"),
+			Key:      os.Getenv("MINIO_KEY"),
+			Secret:   os.Getenv("MINIO_SECRET"),
+			UseSSL:   usessl,
+			Region:   os.Getenv("MINIO_REGION"),
+			Bucket:   os.Getenv("MINIO_BUCKET"),
+		}
 	}
 }
