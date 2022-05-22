@@ -3,12 +3,15 @@ package handlers
 import (
 	"fmt"
 	"net/http"
+	"net/url"
 	"time"
 
 	"myapp/data"
 
 	"github.com/CloudyKit/jet/v6"
 	"github.com/lozhkindm/celeritas"
+	"github.com/lozhkindm/celeritas/filesystem"
+	"github.com/lozhkindm/celeritas/filesystem/minio"
 )
 
 type Handlers struct {
@@ -107,4 +110,43 @@ func (h *Handlers) TestCrypto(w http.ResponseWriter, _ *http.Request) {
 	}
 
 	fmt.Fprintf(w, "decrypted: %s", decrypted)
+}
+
+func (h *Handlers) ListFileSystems(w http.ResponseWriter, r *http.Request) {
+	var (
+		fsType  string
+		curPath = "/"
+		err     error
+		fs      filesystem.FileSystem
+		entries []filesystem.ListEntry
+	)
+	if ft := r.URL.Query().Get("fs-type"); ft != "" {
+		fsType = ft
+	}
+	if cp := r.URL.Query().Get("cur-path"); cp != "" {
+		if cp, err = url.QueryUnescape(cp); err != nil {
+			h.App.ErrorLog.Println(err)
+			return
+		}
+		curPath = cp
+	}
+	if fsType != "" {
+		switch fsType {
+		case "MINIO":
+			f := h.App.FileSystems["MINIO"].(minio.Minio)
+			fs = &f
+		}
+		if entries, err = fs.List(curPath); err != nil {
+			h.App.ErrorLog.Println(err)
+			return
+		}
+	}
+	vars := make(jet.VarMap)
+	vars.Set("list", entries)
+	vars.Set("fs_type", fsType)
+	vars.Set("curPath", curPath)
+	if err = h.render(w, r, "list-filesystems", vars, nil); err != nil {
+		h.App.ErrorLog.Println(err)
+		return
+	}
 }
