@@ -91,7 +91,7 @@ func (h *Handlers) DownloadFile(w http.ResponseWriter, r *http.Request) {
 
 func (h *Handlers) TestCrypto(w http.ResponseWriter, _ *http.Request) {
 	plaintext := "Hello, world"
-	fmt.Fprintf(w, "plaintext: %s\n", plaintext)
+	_, _ = fmt.Fprintf(w, "plaintext: %s\n", plaintext)
 
 	encrypted, err := h.encrypt(plaintext)
 	if err != nil {
@@ -100,7 +100,7 @@ func (h *Handlers) TestCrypto(w http.ResponseWriter, _ *http.Request) {
 		return
 	}
 
-	fmt.Fprintf(w, "encrypted: %s\n", encrypted)
+	_, _ = fmt.Fprintf(w, "encrypted: %s\n", encrypted)
 
 	decrypted, err := h.decrypt(encrypted)
 	if err != nil {
@@ -109,7 +109,7 @@ func (h *Handlers) TestCrypto(w http.ResponseWriter, _ *http.Request) {
 		return
 	}
 
-	fmt.Fprintf(w, "decrypted: %s", decrypted)
+	_, _ = fmt.Fprintf(w, "decrypted: %s", decrypted)
 }
 
 func (h *Handlers) ListFileSystems(w http.ResponseWriter, r *http.Request) {
@@ -146,6 +146,16 @@ func (h *Handlers) ListFileSystems(w http.ResponseWriter, r *http.Request) {
 	vars.Set("fs_type", fsType)
 	vars.Set("curPath", curPath)
 	if err = h.render(w, r, "list-filesystems", vars, nil); err != nil {
+		h.App.ErrorLog.Println(err)
+		return
+	}
+}
+
+func (h *Handlers) UploadFileToFileSystem(w http.ResponseWriter, r *http.Request) {
+	fsType := r.URL.Query().Get("type")
+	vars := make(jet.VarMap)
+	vars.Set("fs_type", fsType)
+	if err := h.render(w, r, "upload", vars, nil); err != nil {
 		h.App.ErrorLog.Println(err)
 		return
 	}
