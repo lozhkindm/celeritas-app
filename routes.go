@@ -8,7 +8,6 @@ import (
 	"myapp/data"
 
 	"github.com/go-chi/chi/v5"
-	"github.com/lozhkindm/celeritas/filesystem/minio"
 	"github.com/lozhkindm/celeritas/mailer"
 )
 
@@ -40,17 +39,7 @@ func (a *application) routes() *chi.Mux {
 	a.routePost("/api/delete-from-cache", a.Handlers.DeleteFromCache)
 	a.routePost("/api/empty-cache", a.Handlers.EmptyCache)
 
-	a.routeGet("/test-minio", func(w http.ResponseWriter, r *http.Request) {
-		f := a.App.FileSystems["MINIO"].(minio.Minio)
-		files, err := f.List("")
-		if err != nil {
-			a.App.ErrorLog.Println(err)
-			return
-		}
-		for _, file := range files {
-			a.App.InfoLog.Println(file.Key)
-		}
-	})
+	a.routeGet("/list-fs", a.Handlers.ListFileSystems)
 
 	a.routeGet("/test-mail-channel", func(w http.ResponseWriter, r *http.Request) {
 		msg := mailer.Message{
