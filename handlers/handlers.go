@@ -2,8 +2,11 @@ package handlers
 
 import (
 	"fmt"
+	"io"
+	"mime/multipart"
 	"net/http"
 	"net/url"
+	"os"
 	"time"
 
 	"myapp/data"
@@ -151,7 +154,7 @@ func (h *Handlers) ListFileSystems(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func (h *Handlers) UploadFileToFileSystem(w http.ResponseWriter, r *http.Request) {
+func (h *Handlers) FormUploadFileToFileSystem(w http.ResponseWriter, r *http.Request) {
 	fsType := r.URL.Query().Get("type")
 	vars := make(jet.VarMap)
 	vars.Set("fs_type", fsType)
@@ -159,4 +162,55 @@ func (h *Handlers) UploadFileToFileSystem(w http.ResponseWriter, r *http.Request
 		h.App.ErrorLog.Println(err)
 		return
 	}
+}
+
+func (h *Handlers) PostUploadFileToFileSystem(w http.ResponseWriter, r *http.Request) {
+	filename, err := getFileToUpload(r, "formFile")
+	if err != nil {
+		h.App.ErrorLog.Println(err)
+		h.App.InternalError(w)
+		return
+	}
+
+	tp := r.Form.Get("upload-type")
+
+	switch tp {
+	case "MINIO":
+		fs := h.App.FileSystems["MINIO"].(minio.Minio)
+		if err := fs.Put(filename, ""); err != nil {
+			h.App.ErrorLog.Println(err)
+			h.App.InternalError(w)
+		}
+	}
+
+	h.App.Session.Put(r.Context(), "flash", "File uploaded")
+	http.Redirect(w, r, fmt.Sprintf("/files/upload?type=%s", tp), http.StatusSeeOther)
+}
+
+func getFileToUpload(r *http.Request, key string) (string, error) {
+	if err := r.ParseMultipartForm(10 << 20); err != nil {
+		return "", err
+	}
+
+	file, header, err := r.FormFile(key)
+	if err != nil {
+		return "", err
+	}
+	defer func(file multipart.File) {
+		_ = file.Close()
+	}(file)
+
+	dst, err := os.Create(fmt.Sprintf("./tmp/%s", header.Filename))
+	if err != nil {
+		return "", err
+	}
+	defer func(dst *os.File) {
+		_ = dst.Close()
+	}(dst)
+
+	if _, err := io.Copy(dst, file); err != nil {
+		return "", err
+	}
+
+	return fmt.Sprintf("./tmp/%s", header.Filename), nil
 }
