@@ -187,6 +187,34 @@ func (h *Handlers) PostUploadFileToFileSystem(w http.ResponseWriter, r *http.Req
 	http.Redirect(w, r, fmt.Sprintf("/files/upload?type=%s", tp), http.StatusSeeOther)
 }
 
+func (h *Handlers) DeleteFromFileSystem(w http.ResponseWriter, r *http.Request) {
+	var (
+		fs       filesystem.FileSystem
+		fsType   string
+		filename string
+	)
+	fsType = r.URL.Query().Get("fs_type")
+	filename = r.URL.Query().Get("file")
+
+	switch fsType {
+	case "MINIO":
+		f := h.App.FileSystems["MINIO"].(minio.Minio)
+		fs = &f
+	}
+
+	deleted, err := fs.Delete([]string{filename})
+	if err != nil {
+		h.App.ErrorLog.Println(err)
+		h.App.InternalError(w)
+		return
+	}
+	if deleted {
+		h.App.Session.Put(r.Context(), "flash", fmt.Sprintf("%s was deleted", filename))
+	}
+
+	http.Redirect(w, r, fmt.Sprintf("/list-fs?fs-type=%s", fsType), http.StatusSeeOther)
+}
+
 func getFileToUpload(r *http.Request, key string) (string, error) {
 	if err := r.ParseMultipartForm(10 << 20); err != nil {
 		return "", err
