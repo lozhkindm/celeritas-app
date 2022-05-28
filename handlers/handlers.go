@@ -15,6 +15,7 @@ import (
 	"github.com/lozhkindm/celeritas"
 	"github.com/lozhkindm/celeritas/filesystem"
 	"github.com/lozhkindm/celeritas/filesystem/minio"
+	"github.com/lozhkindm/celeritas/filesystem/sftp"
 )
 
 type Handlers struct {
@@ -137,6 +138,9 @@ func (h *Handlers) ListFileSystems(w http.ResponseWriter, r *http.Request) {
 		switch fsType {
 		case "MINIO":
 			f := h.App.FileSystems["MINIO"].(minio.Minio)
+			fs = &f
+		case "SFTP":
+			f := h.App.FileSystems["SFTP"].(sftp.SFTP)
 			fs = &f
 		}
 		if entries, err = fs.List(curPath); err != nil {

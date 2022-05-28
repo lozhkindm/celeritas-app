@@ -222,6 +222,9 @@ github.com/klauspost/compress/zstd/internal/xxhash
 # github.com/klauspost/cpuid v1.3.1
 ## explicit; go 1.12
 github.com/klauspost/cpuid
+# github.com/kr/fs v0.1.0
+## explicit
+github.com/kr/fs
 # github.com/lib/pq v1.10.4
 ## explicit; go 1.13
 github.com/lib/pq
@@ -233,6 +236,7 @@ github.com/lozhkindm/celeritas
 github.com/lozhkindm/celeritas/cache
 github.com/lozhkindm/celeritas/filesystem
 github.com/lozhkindm/celeritas/filesystem/minio
+github.com/lozhkindm/celeritas/filesystem/sftp
 github.com/lozhkindm/celeritas/mailer
 github.com/lozhkindm/celeritas/render
 github.com/lozhkindm/celeritas/session
@@ -314,6 +318,10 @@ github.com/ory/dockertest/v3/docker/types/versions
 # github.com/pkg/errors v0.9.1
 ## explicit
 github.com/pkg/errors
+# github.com/pkg/sftp v1.13.4
+## explicit; go 1.15
+github.com/pkg/sftp
+github.com/pkg/sftp/internal/encoding/ssh/filexfer
 # github.com/robfig/cron/v3 v3.0.1
 ## explicit; go 1.12
 github.com/robfig/cron/v3
@@ -381,7 +389,16 @@ golang.org/x/crypto/argon2
 golang.org/x/crypto/bcrypt
 golang.org/x/crypto/blake2b
 golang.org/x/crypto/blowfish
+golang.org/x/crypto/chacha20
+golang.org/x/crypto/curve25519
+golang.org/x/crypto/curve25519/internal/field
+golang.org/x/crypto/ed25519
+golang.org/x/crypto/ed25519/internal/edwards25519
+golang.org/x/crypto/internal/poly1305
+golang.org/x/crypto/internal/subtle
 golang.org/x/crypto/pbkdf2
+golang.org/x/crypto/ssh
+golang.org/x/crypto/ssh/internal/bcrypt_pbkdf
 # golang.org/x/net v0.0.0-20211112202133-69e39bad7dc2
 ## explicit; go 1.17
 golang.org/x/net/context

@@ -10,6 +10,7 @@ import (
 
 	"github.com/lozhkindm/celeritas/cache"
 	"github.com/lozhkindm/celeritas/filesystem/minio"
+	"github.com/lozhkindm/celeritas/filesystem/sftp"
 	"github.com/lozhkindm/celeritas/mailer"
 	"github.com/lozhkindm/celeritas/render"
 	"github.com/lozhkindm/celeritas/session"
@@ -359,6 +360,14 @@ func (c *Celeritas) createFileSystem() {
 			UseSSL:   usessl,
 			Region:   os.Getenv("MINIO_REGION"),
 			Bucket:   os.Getenv("MINIO_BUCKET"),
+		}
+	}
+	if os.Getenv("SFTP_HOST") != "" {
+		c.FileSystems["SFTP"] = sftp.SFTP{
+			Host:     os.Getenv("SFTP_HOST"),
+			User:     os.Getenv("SFTP_USER"),
+			Password: os.Getenv("SFTP_PASSWORD"),
+			Port:     os.Getenv("SFTP_PORT"),
 		}
 	}
 }
