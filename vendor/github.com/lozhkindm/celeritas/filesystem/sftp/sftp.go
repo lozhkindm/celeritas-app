@@ -39,7 +39,7 @@ func (s *SFTP) getCredentials() (*sftp.Client, error) {
 	return client, nil
 }
 
-func (s *SFTP) Put(filename, _ string) error {
+func (s *SFTP) Put(filename, folder string) error {
 	client, err := s.getCredentials()
 	if err != nil {
 		return err
@@ -56,7 +56,7 @@ func (s *SFTP) Put(filename, _ string) error {
 		_ = fileToUpload.Close()
 	}()
 
-	fileSftp, err := client.Create(path.Base(filename))
+	fileSftp, err := client.Create(path.Join(folder, path.Base(filename)))
 	if err != nil {
 		return err
 	}

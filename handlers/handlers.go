@@ -212,6 +212,9 @@ func (h *Handlers) DeleteFromFileSystem(w http.ResponseWriter, r *http.Request) 
 	case "MINIO":
 		f := h.App.FileSystems["MINIO"].(minio.Minio)
 		fs = &f
+	case "SFTP":
+		f := h.App.FileSystems["SFTP"].(sftp.SFTP)
+		fs = &f
 	}
 
 	deleted, err := fs.Delete([]string{filename})
