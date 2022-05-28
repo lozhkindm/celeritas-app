@@ -184,6 +184,14 @@ func (h *Handlers) PostUploadFileToFileSystem(w http.ResponseWriter, r *http.Req
 		if err := fs.Put(filename, ""); err != nil {
 			h.App.ErrorLog.Println(err)
 			h.App.InternalError(w)
+			return
+		}
+	case "SFTP":
+		fs := h.App.FileSystems["SFTP"].(sftp.SFTP)
+		if err := fs.Put(filename, ""); err != nil {
+			h.App.ErrorLog.Println(err)
+			h.App.InternalError(w)
+			return
 		}
 	}
 
