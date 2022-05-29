@@ -8,6 +8,7 @@ import (
 	"strings"
 
 	"github.com/lozhkindm/celeritas/filesystem"
+
 	"github.com/pkg/sftp"
 	"golang.org/x/crypto/ssh"
 )
@@ -79,21 +80,30 @@ func (s *SFTP) Get(dst string, items ...string) error {
 		_ = client.Close()
 	}()
 	for _, item := range items {
-		dstFile, err := os.Create(fmt.Sprintf("%s/%s", dst, path.Base(item)))
-		if err != nil {
-			return err
-		}
-		defer func() {
-			_ = dstFile.Close()
+		err := func() error {
+			dstFile, err := os.Create(fmt.Sprintf("%s/%s", dst, path.Base(item)))
+			if err != nil {
+				return err
+			}
+			defer func() {
+				_ = dstFile.Close()
+			}()
+			srcFile, err := client.Open(item)
+			if err != nil {
+				return err
+			}
+			defer func() {
+				_ = srcFile.Close()
+			}()
+			if _, err := io.Copy(dstFile, srcFile); err != nil {
+				return err
+			}
+			if err := dstFile.Sync(); err != nil {
+				return err
+			}
+			return nil
 		}()
-		srcFile, err := client.Open(item)
 		if err != nil {
-			return err
-		}
-		if _, err := io.Copy(dstFile, srcFile); err != nil {
-			return err
-		}
-		if err := dstFile.Sync(); err != nil {
 			return err
 		}
 	}

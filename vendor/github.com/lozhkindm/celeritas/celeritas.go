@@ -2,6 +2,7 @@ package celeritas
 
 import (
 	"fmt"
+	"github.com/lozhkindm/celeritas/filesystem/webdav"
 	"log"
 	"net/http"
 	"os"
@@ -368,6 +369,13 @@ func (c *Celeritas) createFileSystem() {
 			User:     os.Getenv("SFTP_USER"),
 			Password: os.Getenv("SFTP_PASSWORD"),
 			Port:     os.Getenv("SFTP_PORT"),
+		}
+	}
+	if os.Getenv("WEBDAV_HOST") != "" {
+		c.FileSystems["WEBDAV"] = webdav.WebDAV{
+			Host:     os.Getenv("WEBDAV_HOST"),
+			User:     os.Getenv("WEBDAV_USER"),
+			Password: os.Getenv("WEBDAV_PASSWORD"),
 		}
 	}
 }

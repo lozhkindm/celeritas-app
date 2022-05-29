@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"fmt"
+	"github.com/lozhkindm/celeritas/filesystem/webdav"
 	"io"
 	"mime/multipart"
 	"net/http"
@@ -142,6 +143,9 @@ func (h *Handlers) ListFileSystems(w http.ResponseWriter, r *http.Request) {
 		case "SFTP":
 			f := h.App.FileSystems["SFTP"].(sftp.SFTP)
 			fs = &f
+		case "WEBDAV":
+			f := h.App.FileSystems["WEBDAV"].(webdav.WebDAV)
+			fs = &f
 		}
 		if entries, err = fs.List(curPath); err != nil {
 			h.App.ErrorLog.Println(err)
@@ -176,25 +180,26 @@ func (h *Handlers) PostUploadFileToFileSystem(w http.ResponseWriter, r *http.Req
 		return
 	}
 
+	var fs filesystem.FileSystem
 	tp := r.Form.Get("upload-type")
 
 	switch tp {
 	case "MINIO":
-		fs := h.App.FileSystems["MINIO"].(minio.Minio)
-		if err := fs.Put(filename, ""); err != nil {
-			h.App.ErrorLog.Println(err)
-			h.App.InternalError(w)
-			return
-		}
+		f := h.App.FileSystems["MINIO"].(minio.Minio)
+		fs = &f
 	case "SFTP":
-		fs := h.App.FileSystems["SFTP"].(sftp.SFTP)
-		if err := fs.Put(filename, ""); err != nil {
-			h.App.ErrorLog.Println(err)
-			h.App.InternalError(w)
-			return
-		}
+		f := h.App.FileSystems["SFTP"].(sftp.SFTP)
+		fs = &f
+	case "WEBDAV":
+		f := h.App.FileSystems["WEBDAV"].(webdav.WebDAV)
+		fs = &f
 	}
 
+	if err := fs.Put(filename, ""); err != nil {
+		h.App.ErrorLog.Println(err)
+		h.App.InternalError(w)
+		return
+	}
 	h.App.Session.Put(r.Context(), "flash", "File uploaded")
 	http.Redirect(w, r, fmt.Sprintf("/files/upload?type=%s", tp), http.StatusSeeOther)
 }
@@ -214,6 +219,9 @@ func (h *Handlers) DeleteFromFileSystem(w http.ResponseWriter, r *http.Request) 
 		fs = &f
 	case "SFTP":
 		f := h.App.FileSystems["SFTP"].(sftp.SFTP)
+		fs = &f
+	case "WEBDAV":
+		f := h.App.FileSystems["WEBDAV"].(webdav.WebDAV)
 		fs = &f
 	}
 

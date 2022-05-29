@@ -237,6 +237,7 @@ github.com/lozhkindm/celeritas/cache
 github.com/lozhkindm/celeritas/filesystem
 github.com/lozhkindm/celeritas/filesystem/minio
 github.com/lozhkindm/celeritas/filesystem/sftp
+github.com/lozhkindm/celeritas/filesystem/webdav
 github.com/lozhkindm/celeritas/mailer
 github.com/lozhkindm/celeritas/render
 github.com/lozhkindm/celeritas/session
@@ -338,6 +339,9 @@ github.com/sendgrid/sendgrid-go/helpers/mail
 # github.com/sirupsen/logrus v1.8.1
 ## explicit; go 1.13
 github.com/sirupsen/logrus
+# github.com/studio-b12/gowebdav v0.0.0-20220128162035-c7b1ff8a5e62
+## explicit; go 1.17
+github.com/studio-b12/gowebdav
 # github.com/toorop/go-dkim v0.0.0-20201103131630-e1cd1a0a5208
 ## explicit
 github.com/toorop/go-dkim
