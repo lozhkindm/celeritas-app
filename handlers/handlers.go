@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"fmt"
+	"github.com/lozhkindm/celeritas/filesystem/s3"
 	"github.com/lozhkindm/celeritas/filesystem/webdav"
 	"io"
 	"mime/multipart"
@@ -146,6 +147,9 @@ func (h *Handlers) ListFileSystems(w http.ResponseWriter, r *http.Request) {
 		case "WEBDAV":
 			f := h.App.FileSystems["WEBDAV"].(webdav.WebDAV)
 			fs = &f
+		case "S3":
+			f := h.App.FileSystems["S3"].(s3.S3)
+			fs = &f
 		}
 		if entries, err = fs.List(curPath); err != nil {
 			h.App.ErrorLog.Println(err)
@@ -193,6 +197,9 @@ func (h *Handlers) PostUploadFileToFileSystem(w http.ResponseWriter, r *http.Req
 	case "WEBDAV":
 		f := h.App.FileSystems["WEBDAV"].(webdav.WebDAV)
 		fs = &f
+	case "S3":
+		f := h.App.FileSystems["S3"].(s3.S3)
+		fs = &f
 	}
 
 	if err := fs.Put(filename, ""); err != nil {
@@ -222,6 +229,9 @@ func (h *Handlers) DeleteFromFileSystem(w http.ResponseWriter, r *http.Request) 
 		fs = &f
 	case "WEBDAV":
 		f := h.App.FileSystems["WEBDAV"].(webdav.WebDAV)
+		fs = &f
+	case "S3":
+		f := h.App.FileSystems["S3"].(s3.S3)
 		fs = &f
 	}
 
