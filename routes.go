@@ -42,6 +42,8 @@ func (a *application) routes() *chi.Mux {
 	a.routeGet("/files/upload", a.Handlers.FormUploadFileToFileSystem)
 	a.routePost("/files/upload", a.Handlers.PostUploadFileToFileSystem)
 	a.routeGet("/delete-from-fs", a.Handlers.DeleteFromFileSystem)
+	a.routeGet("/upload", a.Handlers.FormGenericUpload)
+	a.routePost("/upload", a.Handlers.PostGenericUpload)
 
 	a.routeGet("/test-mail-channel", func(w http.ResponseWriter, r *http.Request) {
 		msg := mailer.Message{

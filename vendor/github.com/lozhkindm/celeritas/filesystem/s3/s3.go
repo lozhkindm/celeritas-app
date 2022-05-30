@@ -90,6 +90,9 @@ func (s *S3) Get(dst string, items ...string) error {
 
 func (s *S3) List(prefix string) ([]filesystem.ListEntry, error) {
 	var entries []filesystem.ListEntry
+	if prefix == "/" {
+		prefix = ""
+	}
 	sess := session.Must(session.NewSession(&aws.Config{
 		Endpoint:    aws.String(s.Endpoint),
 		Region:      aws.String(s.Region),

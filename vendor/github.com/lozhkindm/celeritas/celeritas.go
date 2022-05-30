@@ -46,6 +46,10 @@ type Celeritas struct {
 	Mail          mailer.Mail
 	Server        Server
 	FileSystems   map[string]interface{}
+	S3            s3.S3
+	SFTP          sftp.SFTP
+	WebDAV        webdav.WebDAV
+	Minio         minio.Minio
 	config        config
 	redisPool     *redis.Pool
 	badgerConn    *badger.DB
@@ -355,7 +359,7 @@ func (c *Celeritas) createFileSystem() {
 	c.FileSystems = make(map[string]interface{})
 	if os.Getenv("MINIO_SECRET") != "" {
 		usessl, _ := strconv.ParseBool(os.Getenv("MINIO_USESSL"))
-		c.FileSystems["MINIO"] = minio.Minio{
+		c.Minio = minio.Minio{
 			Endpoint: os.Getenv("MINIO_ENDPOINT"),
 			Key:      os.Getenv("MINIO_KEY"),
 			Secret:   os.Getenv("MINIO_SECRET"),
@@ -363,29 +367,33 @@ func (c *Celeritas) createFileSystem() {
 			Region:   os.Getenv("MINIO_REGION"),
 			Bucket:   os.Getenv("MINIO_BUCKET"),
 		}
+		c.FileSystems["MINIO"] = c.Minio
 	}
 	if os.Getenv("SFTP_HOST") != "" {
-		c.FileSystems["SFTP"] = sftp.SFTP{
+		c.SFTP = sftp.SFTP{
 			Host:     os.Getenv("SFTP_HOST"),
 			User:     os.Getenv("SFTP_USER"),
 			Password: os.Getenv("SFTP_PASSWORD"),
 			Port:     os.Getenv("SFTP_PORT"),
 		}
+		c.FileSystems["SFTP"] = c.SFTP
 	}
 	if os.Getenv("WEBDAV_HOST") != "" {
-		c.FileSystems["WEBDAV"] = webdav.WebDAV{
+		c.WebDAV = webdav.WebDAV{
 			Host:     os.Getenv("WEBDAV_HOST"),
 			User:     os.Getenv("WEBDAV_USER"),
 			Password: os.Getenv("WEBDAV_PASSWORD"),
 		}
+		c.FileSystems["WEBDAV"] = c.WebDAV
 	}
 	if os.Getenv("S3_KEY") != "" {
-		c.FileSystems["S3"] = s3.S3{
+		c.S3 = s3.S3{
 			Key:      os.Getenv("S3_KEY"),
 			Secret:   os.Getenv("S3_SECRET"),
 			Region:   os.Getenv("S3_REGION"),
 			Endpoint: os.Getenv("S3_ENDPOINT"),
 			Bucket:   os.Getenv("S3_BUCKET"),
 		}
+		c.FileSystems["S3"] = c.S3
 	}
 }
