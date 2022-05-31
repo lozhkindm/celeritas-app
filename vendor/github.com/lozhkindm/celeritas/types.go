@@ -30,3 +30,8 @@ type redisConfig struct {
 	password string
 	prefix   string
 }
+
+type uploadConfig struct {
+	allowedMimes []string
+	maxSize      int64
+}

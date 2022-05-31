@@ -99,7 +99,7 @@ func (r *Render) defaultData(td *TemplateData, req *http.Request) {
 	td.ServerName = r.ServerName
 	td.Port = r.Port
 	td.CSRFToken = nosurf.Token(req)
-	td.Error = r.Session.PopString(req.Context(), "email")
+	td.Error = r.Session.PopString(req.Context(), "error")
 	td.Flash = r.Session.PopString(req.Context(), "flash")
 	if r.Session.Exists(req.Context(), "userID") {
 		td.IsAuthenticated = true

@@ -3,7 +3,6 @@ package celeritas
 import (
 	"errors"
 	"fmt"
-	"github.com/gabriel-vasile/mimetype"
 	"io"
 	"mime/multipart"
 	"net/http"
@@ -11,10 +10,17 @@ import (
 	"path"
 
 	"github.com/lozhkindm/celeritas/filesystem"
+
+	"github.com/gabriel-vasile/mimetype"
 )
 
 func (c *Celeritas) UploadFile(r *http.Request, field, dst string, fs filesystem.FileSystem) error {
-	filename, err := getFileToUpload(r, field)
+	filename, err := c.getFileToUpload(r, field)
+	defer func() {
+		if err := os.Remove(filename); err != nil {
+			c.ErrorLog.Println(err)
+		}
+	}()
 	if err != nil {
 		return err
 	}
@@ -30,8 +36,8 @@ func (c *Celeritas) UploadFile(r *http.Request, field, dst string, fs filesystem
 	return nil
 }
 
-func getFileToUpload(r *http.Request, field string) (string, error) {
-	if err := r.ParseMultipartForm(10 << 20); err != nil {
+func (c *Celeritas) getFileToUpload(r *http.Request, field string) (string, error) {
+	if err := r.ParseMultipartForm(c.config.upload.maxSize); err != nil {
 		return "", err
 	}
 
@@ -50,7 +56,7 @@ func getFileToUpload(r *http.Request, field string) (string, error) {
 	if _, err := file.Seek(0, 0); err != nil {
 		return "", err
 	}
-	if !isValidMime(mime.String()) {
+	if !c.isValidMime(mime.String()) {
 		return "", errors.New("invalid file type")
 	}
 
@@ -69,9 +75,8 @@ func getFileToUpload(r *http.Request, field string) (string, error) {
 	return fmt.Sprintf("./tmp/%s", header.Filename), nil
 }
 
-func isValidMime(mime string) bool {
-	valid := []string{"image/gif", "image/jpeg", "image/png", "application/pdf"}
-	for _, v := range valid {
+func (c *Celeritas) isValidMime(mime string) bool {
+	for _, v := range c.config.upload.allowedMimes {
 		if mime == v {
 			return true
 		}

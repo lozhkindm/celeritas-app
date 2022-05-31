@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"os"
 	"strconv"
+	"strings"
 	"time"
 
 	"github.com/lozhkindm/celeritas/cache"
@@ -69,6 +70,7 @@ type config struct {
 	sessionType string
 	db          dbConfig
 	redis       redisConfig
+	upload      uploadConfig
 }
 
 func (c *Celeritas) New(rootPath string) error {
@@ -96,7 +98,9 @@ func (c *Celeritas) New(rootPath string) error {
 	c.Debug, _ = strconv.ParseBool(os.Getenv("DEBUG"))
 	c.Version = version
 	c.RootPath = rootPath
-	c.createConfig()
+	if err := c.createConfig(); err != nil {
+		return err
+	}
 	c.Routes = c.routes().(*chi.Mux)
 	c.prepareJetViews(rootPath)
 	c.createSession()
@@ -195,7 +199,11 @@ func (c *Celeritas) createLoggers() {
 	c.ErrorLog = log.New(os.Stdout, "ERROR\t", log.Ldate|log.Ltime|log.Lshortfile)
 }
 
-func (c *Celeritas) createConfig() {
+func (c *Celeritas) createConfig() error {
+	uploadSize, err := strconv.Atoi(os.Getenv("MAX_UPLOAD_SIZE"))
+	if err != nil {
+		return err
+	}
 	c.config = config{
 		port:     os.Getenv("PORT"),
 		renderer: os.Getenv("RENDERER"),
@@ -216,7 +224,12 @@ func (c *Celeritas) createConfig() {
 			password: os.Getenv("REDIS_PASSWORD"),
 			prefix:   os.Getenv("REDIS_PREFIX"),
 		},
+		upload: uploadConfig{
+			allowedMimes: strings.Split(os.Getenv("ALLOWED_MIMETYPES"), ","),
+			maxSize:      int64(uploadSize),
+		},
 	}
+	return nil
 }
 
 func (c *Celeritas) createRenderer() {
