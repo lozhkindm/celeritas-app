@@ -14,7 +14,7 @@ require (
 	github.com/lozhkindm/celeritas v0.0.0-20220506141638-e23539ec9e75
 	github.com/ory/dockertest/v3 v3.8.1
 	github.com/upper/db/v4 v4.5.0
-	golang.org/x/crypto v0.0.0-20211209193657-4570a0811e8b
+	golang.org/x/crypto v0.0.0-20220214200702-86341886e292
 )
 
 require (
@@ -98,6 +98,7 @@ require (
 	github.com/kr/fs v0.1.0 // indirect
 	github.com/lib/pq v1.10.4 // indirect
 	github.com/mailgun/mailgun-go/v4 v4.4.1 // indirect
+	github.com/markbates/goth v1.72.0 // indirect
 	github.com/markbates/oncer v1.0.0 // indirect
 	github.com/markbates/safe v1.0.1 // indirect
 	github.com/mattn/go-colorable v0.1.9 // indirect
@@ -137,11 +138,13 @@ require (
 	go.opencensus.io v0.23.0 // indirect
 	go.uber.org/atomic v1.7.0 // indirect
 	golang.org/x/net v0.0.0-20211112202133-69e39bad7dc2 // indirect
+	golang.org/x/oauth2 v0.0.0-20210628180205-a41e5a781914 // indirect
 	golang.org/x/sync v0.0.0-20210220032951-036812b2e83c // indirect
 	golang.org/x/sys v0.0.0-20211210111614-af8b64212486 // indirect
 	golang.org/x/term v0.0.0-20210927222741-03fcf44c2211 // indirect
 	golang.org/x/text v0.3.7 // indirect
 	golang.org/x/tools v0.1.10 // indirect
+	google.golang.org/appengine v1.6.7 // indirect
 	google.golang.org/protobuf v1.27.1 // indirect
 	gopkg.in/ini.v1 v1.62.0 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
