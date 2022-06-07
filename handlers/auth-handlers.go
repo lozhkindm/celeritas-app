@@ -11,6 +11,7 @@ import (
 	"myapp/data"
 
 	"github.com/CloudyKit/jet/v6"
+	"github.com/go-chi/chi/v5"
 	"github.com/gorilla/sessions"
 	"github.com/lozhkindm/celeritas/mailer"
 	"github.com/lozhkindm/celeritas/urlsigner"
@@ -211,4 +212,18 @@ func (h *Handlers) InitSocialAuth() {
 	st.Options.HttpOnly = true
 	st.Options.Secure = false
 	gothic.Store = st
+}
+
+func (h *Handlers) SocialLogin(w http.ResponseWriter, r *http.Request) {
+	h.App.Session.Put(r.Context(), "social_provider", chi.URLParam(r, "provider"))
+	h.InitSocialAuth()
+	if _, err := gothic.CompleteUserAuth(w, r); err != nil {
+		gothic.BeginAuthHandler(w, r)
+	} else {
+		http.Redirect(w, r, "/", http.StatusSeeOther)
+	}
+}
+
+func (h *Handlers) SocialMediaCallback(w http.ResponseWriter, r *http.Request) {
+
 }
