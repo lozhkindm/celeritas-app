@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"net/http"
 	"os"
+	"strings"
 	"time"
 
 	"myapp/data"
@@ -225,5 +226,44 @@ func (h *Handlers) SocialLogin(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *Handlers) SocialMediaCallback(w http.ResponseWriter, r *http.Request) {
+	h.InitSocialAuth()
+	gUser, err := gothic.CompleteUserAuth(w, r)
+	if err != nil {
+		h.App.Session.Put(r.Context(), "error", err.Error())
+		http.Redirect(w, r, "/users/login", http.StatusSeeOther)
+		return
+	}
 
+	user, err := h.Models.Users.GetByEmail(gUser.Email)
+	if err != nil {
+		user = &data.User{
+			Active:    1,
+			Password:  h.App.RandStr(20),
+			CreatedAt: time.Now(),
+			UpdatedAt: time.Now(),
+		}
+
+		provider := h.App.Session.Get(r.Context(), "social_provider").(string)
+		switch provider {
+		case "github":
+			partsName := strings.Split(gUser.Name, " ")
+			user.FirstName = partsName[0]
+			if len(partsName) > 1 {
+				user.LastName = partsName[1]
+			}
+		case "google":
+		}
+
+		if _, err := h.Models.Users.Insert(user); err != nil {
+			h.App.InternalError(w)
+			return
+		}
+	}
+
+	h.App.Session.Put(r.Context(), "userID", user.ID)
+	h.App.Session.Put(r.Context(), "social_token", gUser.AccessToken)
+	h.App.Session.Put(r.Context(), "social_email", gUser.Email)
+	h.App.Session.Put(r.Context(), "flash", "Successfully logged in")
+
+	http.Redirect(w, r, "/", http.StatusSeeOther)
 }
