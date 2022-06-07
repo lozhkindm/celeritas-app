@@ -8,10 +8,12 @@ require (
 	github.com/CloudyKit/jet/v6 v6.1.0
 	github.com/DATA-DOG/go-sqlmock v1.5.0
 	github.com/go-chi/chi/v5 v5.0.7
+	github.com/gorilla/sessions v1.2.1
 	github.com/jackc/pgconn v1.10.1
 	github.com/jackc/pgx/v4 v4.14.1
 	github.com/justinas/nosurf v1.1.1
 	github.com/lozhkindm/celeritas v0.0.0-20220506141638-e23539ec9e75
+	github.com/markbates/goth v1.72.0
 	github.com/ory/dockertest/v3 v3.8.1
 	github.com/upper/db/v4 v4.5.0
 	golang.org/x/crypto v0.0.0-20220214200702-86341886e292
@@ -79,6 +81,7 @@ require (
 	github.com/google/uuid v1.3.0 // indirect
 	github.com/gorilla/css v1.0.0 // indirect
 	github.com/gorilla/mux v1.8.0 // indirect
+	github.com/gorilla/securecookie v1.1.1 // indirect
 	github.com/hashicorp/errwrap v1.0.0 // indirect
 	github.com/hashicorp/go-multierror v1.1.0 // indirect
 	github.com/imdario/mergo v0.3.12 // indirect
@@ -98,7 +101,6 @@ require (
 	github.com/kr/fs v0.1.0 // indirect
 	github.com/lib/pq v1.10.4 // indirect
 	github.com/mailgun/mailgun-go/v4 v4.4.1 // indirect
-	github.com/markbates/goth v1.72.0 // indirect
 	github.com/markbates/oncer v1.0.0 // indirect
 	github.com/markbates/safe v1.0.1 // indirect
 	github.com/mattn/go-colorable v0.1.9 // indirect
