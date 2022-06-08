@@ -45,6 +45,9 @@ func (a *application) routes() *chi.Mux {
 	a.routeGet("/upload", a.Handlers.FormGenericUpload)
 	a.routePost("/upload", a.Handlers.PostGenericUpload)
 
+	a.routeGet("/auth/{provider}", a.Handlers.SocialLogin)
+	a.routeGet("/auth/{provider}/callback", a.Handlers.SocialMediaCallback)
+
 	a.routeGet("/test-mail-channel", func(w http.ResponseWriter, r *http.Request) {
 		msg := mailer.Message{
 			From:        "ignat@senkin.com",
