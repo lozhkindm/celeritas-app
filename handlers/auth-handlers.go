@@ -76,6 +76,10 @@ func (h *Handlers) PostUserLogin(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *Handlers) UserLogout(w http.ResponseWriter, r *http.Request) {
+	if err := gothic.Logout(w, r); err != nil {
+		h.App.ErrorLog.Println(err)
+	}
+
 	if h.sessionHas(r.Context(), "remember_token") {
 		var tkn data.RememberToken
 		if err := tkn.Delete(h.sessionGetString(r.Context(), "remember_token")); err != nil {
