@@ -237,6 +237,7 @@ func (h *Handlers) SocialMediaCallback(w http.ResponseWriter, r *http.Request) {
 	user, err := h.Models.Users.GetByEmail(gUser.Email)
 	if err != nil {
 		user = &data.User{
+			Email:     gUser.Email,
 			Active:    1,
 			Password:  h.App.RandStr(20),
 			CreatedAt: time.Now(),
