@@ -316,6 +316,10 @@ func (h *Handlers) socialLogout(_ http.ResponseWriter, r *http.Request) {
 			return
 		}
 	case "google":
-		// google logic
+		token := h.App.Session.Get(r.Context(), "social_token").(string)
+		if _, err := http.PostForm(fmt.Sprintf("https://accounts.google.com/o/oauth2/revoke?%s", token), nil); err != nil {
+			h.App.ErrorLog.Println(err)
+			return
+		}
 	}
 }
