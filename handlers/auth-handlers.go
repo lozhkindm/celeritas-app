@@ -1,8 +1,10 @@
 package handlers
 
 import (
+	"bytes"
 	"crypto/sha256"
 	"encoding/base64"
+	"encoding/json"
 	"fmt"
 	"net/http"
 	"os"
@@ -76,9 +78,7 @@ func (h *Handlers) PostUserLogin(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *Handlers) UserLogout(w http.ResponseWriter, r *http.Request) {
-	if err := gothic.Logout(w, r); err != nil {
-		h.App.ErrorLog.Println(err)
-	}
+	h.socialLogout(w, r)
 
 	if h.sessionHas(r.Context(), "remember_token") {
 		var tkn data.RememberToken
@@ -206,22 +206,9 @@ func (h *Handlers) PostResetPassword(w http.ResponseWriter, r *http.Request) {
 	http.Redirect(w, r, "/users/login", http.StatusSeeOther)
 }
 
-func (h *Handlers) InitSocialAuth() {
-	scope := []string{"user"}
-	goth.UseProviders(
-		github.New(os.Getenv("GITHUB_KEY"), os.Getenv("GITHUB_SECRET"), os.Getenv("GITHUB_CALLBACK"), scope...),
-	)
-	st := sessions.NewCookieStore([]byte(os.Getenv("KEY")))
-	st.MaxAge(86400 * 30)
-	st.Options.Path = "/"
-	st.Options.HttpOnly = true
-	st.Options.Secure = false
-	gothic.Store = st
-}
-
 func (h *Handlers) SocialLogin(w http.ResponseWriter, r *http.Request) {
 	h.App.Session.Put(r.Context(), "social_provider", chi.URLParam(r, "provider"))
-	h.InitSocialAuth()
+	h.initSocialAuth()
 	if _, err := gothic.CompleteUserAuth(w, r); err != nil {
 		gothic.BeginAuthHandler(w, r)
 	} else {
@@ -230,7 +217,7 @@ func (h *Handlers) SocialLogin(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *Handlers) SocialMediaCallback(w http.ResponseWriter, r *http.Request) {
-	h.InitSocialAuth()
+	h.initSocialAuth()
 	gUser, err := gothic.CompleteUserAuth(w, r)
 	if err != nil {
 		h.App.Session.Put(r.Context(), "error", err.Error())
@@ -271,4 +258,61 @@ func (h *Handlers) SocialMediaCallback(w http.ResponseWriter, r *http.Request) {
 	h.App.Session.Put(r.Context(), "flash", "Successfully logged in")
 
 	http.Redirect(w, r, "/", http.StatusSeeOther)
+}
+
+func (h *Handlers) initSocialAuth() {
+	scope := []string{"user"}
+	goth.UseProviders(
+		github.New(os.Getenv("GITHUB_KEY"), os.Getenv("GITHUB_SECRET"), os.Getenv("GITHUB_CALLBACK"), scope...),
+	)
+	st := sessions.NewCookieStore([]byte(os.Getenv("KEY")))
+	st.MaxAge(86400 * 30)
+	st.Options.Path = "/"
+	st.Options.HttpOnly = true
+	st.Options.Secure = false
+	gothic.Store = st
+}
+
+func (h *Handlers) socialLogout(_ http.ResponseWriter, r *http.Request) {
+	provider, ok := h.App.Session.Get(r.Context(), "social_provider").(string)
+	if !ok {
+		return
+	}
+	switch provider {
+	case "github":
+		key := os.Getenv("GITHUB_KEY")
+		secret := os.Getenv("GITHUB_SECRET")
+		token, ok := h.App.Session.Get(r.Context(), "social_token").(string)
+		if !ok {
+			return
+		}
+
+		var payload struct {
+			AccessToken string `json:"access_token"`
+		}
+		payload.AccessToken = token
+		jsonReq, err := json.Marshal(payload)
+		if err != nil {
+			h.App.ErrorLog.Println(err)
+			return
+		}
+
+		req, err := http.NewRequest(
+			http.MethodDelete,
+			fmt.Sprintf("https://%s:%s@api.github.com/applications/%s/grant", key, secret, key),
+			bytes.NewBuffer(jsonReq),
+		)
+		if err != nil {
+			h.App.ErrorLog.Println(err)
+			return
+		}
+
+		client := &http.Client{}
+		if _, err := client.Do(req); err != nil {
+			h.App.ErrorLog.Println(err)
+			return
+		}
+	case "google":
+		// google logic
+	}
 }
