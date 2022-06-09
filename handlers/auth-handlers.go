@@ -21,6 +21,7 @@ import (
 	"github.com/markbates/goth"
 	"github.com/markbates/goth/gothic"
 	"github.com/markbates/goth/providers/github"
+	"github.com/markbates/goth/providers/google"
 )
 
 func (h *Handlers) UserLogin(w http.ResponseWriter, r *http.Request) {
@@ -244,6 +245,8 @@ func (h *Handlers) SocialMediaCallback(w http.ResponseWriter, r *http.Request) {
 				user.LastName = partsName[1]
 			}
 		case "google":
+			user.FirstName = gUser.FirstName
+			user.LastName = gUser.LastName
 		}
 
 		if _, err := h.Models.Users.Insert(user); err != nil {
@@ -261,9 +264,9 @@ func (h *Handlers) SocialMediaCallback(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *Handlers) initSocialAuth() {
-	scope := []string{"user"}
 	goth.UseProviders(
-		github.New(os.Getenv("GITHUB_KEY"), os.Getenv("GITHUB_SECRET"), os.Getenv("GITHUB_CALLBACK"), scope...),
+		github.New(os.Getenv("GITHUB_KEY"), os.Getenv("GITHUB_SECRET"), os.Getenv("GITHUB_CALLBACK"), []string{"user"}...),
+		google.New(os.Getenv("GOOGLE_KEY"), os.Getenv("GOOGLE_SECRET"), os.Getenv("GOOGLE_CALLBACK"), []string{"email", "profile"}...),
 	)
 	st := sessions.NewCookieStore([]byte(os.Getenv("KEY")))
 	st.MaxAge(86400 * 30)

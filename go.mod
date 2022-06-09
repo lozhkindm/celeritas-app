@@ -20,6 +20,7 @@ require (
 )
 
 require (
+	cloud.google.com/go v0.88.0 // indirect
 	github.com/Azure/go-ansiterm v0.0.0-20210617225240-d185dfc1b5a1 // indirect
 	github.com/CloudyKit/fastprinter v0.0.0-20200109182630-33d98a066a53 // indirect
 	github.com/Masterminds/semver/v3 v3.1.1 // indirect
