@@ -11,6 +11,13 @@ import (
 	"path/filepath"
 )
 
+func (c *Celeritas) ResponseMaintenanceMode(w http.ResponseWriter, r *http.Request) {
+	w.WriteHeader(http.StatusServiceUnavailable)
+	w.Header().Set("Retry-After", "300")
+	w.Header().Set("Cache-Control", "no-store, no-cache, must-revalidate, post-check=0, pre-check=0")
+	http.ServeFile(w, r, path.Join(c.RootPath, "public/maintenance.html"))
+}
+
 func (c *Celeritas) ReadJSON(w http.ResponseWriter, r *http.Request, data interface{}) error {
 	maxBytes := 1048576 // 1 MB
 

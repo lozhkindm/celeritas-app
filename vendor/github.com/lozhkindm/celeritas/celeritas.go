@@ -148,6 +148,7 @@ func (c *Celeritas) ListenAndServe() {
 		IdleTimeout:  30 * time.Second,
 		ErrorLog:     c.ErrorLog,
 	}
+	go c.listenRPC()
 	c.InfoLog.Printf("Listening on port %s", os.Getenv("PORT"))
 	if err := srv.ListenAndServe(); err != nil {
 		c.ErrorLog.Fatal(err)
