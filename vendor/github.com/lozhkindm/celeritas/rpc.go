@@ -30,7 +30,7 @@ func (c *Celeritas) listenRPC() {
 			c.ErrorLog.Println(err)
 			return
 		}
-		listen, err := net.Listen("rpc", fmt.Sprintf("127.0.0.1:%s", port))
+		listen, err := net.Listen("tcp", fmt.Sprintf("127.0.0.1:%s", port))
 		if err != nil {
 			c.ErrorLog.Println(err)
 			return
