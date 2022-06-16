@@ -38,7 +38,7 @@ type Celeritas struct {
 	Routes        *chi.Mux
 	Render        *render.Render
 	Session       *scs.SessionManager
-	DB            database
+	DB            Database
 	Cache         cache.Cache
 	JetViews      *jet.Set
 	EncryptionKey string
@@ -239,7 +239,7 @@ func (c *Celeritas) createDB() {
 		if err != nil {
 			c.ErrorLog.Fatal(err)
 		}
-		c.DB = database{DataType: dbType, Pool: db}
+		c.DB = Database{DataType: dbType, Pool: db}
 	}
 }
 

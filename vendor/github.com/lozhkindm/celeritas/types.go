@@ -20,7 +20,7 @@ type dbConfig struct {
 	database string
 }
 
-type database struct {
+type Database struct {
 	DataType string
 	Pool     *sql.DB
 }

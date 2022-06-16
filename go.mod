@@ -7,6 +7,7 @@ replace github.com/lozhkindm/celeritas => ../celeritas
 require (
 	github.com/CloudyKit/jet/v6 v6.1.0
 	github.com/DATA-DOG/go-sqlmock v1.5.0
+	github.com/alexedwards/scs/v2 v2.5.0
 	github.com/go-chi/chi/v5 v5.0.7
 	github.com/gorilla/sessions v1.2.1
 	github.com/jackc/pgconn v1.10.1
@@ -32,7 +33,6 @@ require (
 	github.com/alexedwards/scs/mysqlstore v0.0.0-20220216073957-c252878bcf5a // indirect
 	github.com/alexedwards/scs/postgresstore v0.0.0-20220216073957-c252878bcf5a // indirect
 	github.com/alexedwards/scs/redisstore v0.0.0-20220216073957-c252878bcf5a // indirect
-	github.com/alexedwards/scs/v2 v2.5.0 // indirect
 	github.com/andybalholm/cascadia v1.1.0 // indirect
 	github.com/asaskevich/govalidator v0.0.0-20210307081110-f21760c49a8d // indirect
 	github.com/aws/aws-sdk-go v1.17.7 // indirect
