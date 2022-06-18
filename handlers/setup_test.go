@@ -1,6 +1,8 @@
 package handlers
 
 import (
+	"context"
+	"github.com/go-chi/chi/v5"
 	"log"
 	"net/http"
 	"os"
@@ -62,4 +64,19 @@ func TestMain(m *testing.M) {
 	testHandlers.App = &cel
 
 	os.Exit(m.Run())
+}
+
+func getRoutes() http.Handler {
+	mux := chi.NewRouter()
+	mux.Use(cel.SessionLoad)
+	mux.Get("/", testHandlers.Home)
+	return mux
+}
+
+func getCtx(r *http.Request) context.Context {
+	ctx, err := testSession.Load(r.Context(), r.Header.Get("X-Session"))
+	if err != nil {
+		log.Fatal(err)
+	}
+	return ctx
 }
