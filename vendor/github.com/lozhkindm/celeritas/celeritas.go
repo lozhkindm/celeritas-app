@@ -74,8 +74,10 @@ type config struct {
 
 func (c *Celeritas) New(rootPath string) error {
 	pathConfig := initPaths{
-		rootPath:    rootPath,
-		folderNames: []string{"handlers", "migrations", "views", "mails", "data", "public", "tmp", "logs", "middlewares"},
+		rootPath: rootPath,
+		folderNames: []string{
+			"handlers", "migrations", "views", "mails", "data", "public", "tmp", "logs", "middlewares", "screenshots",
+		},
 	}
 
 	if err := c.init(pathConfig); err != nil {
