@@ -2,20 +2,15 @@ package celeritas
 
 import (
 	"fmt"
+	"time"
+
 	"github.com/go-rod/rod"
 	"github.com/go-rod/rod/lib/proto"
 	"github.com/go-rod/rod/lib/utils"
-	"time"
 )
 
 func (c *Celeritas) TakeScreenshot(url, testname string, wight, height float64) error {
-	page := rod.New().
-		MustConnect().
-		MustIgnoreCertErrors(true).
-		MustPage(url).
-		MustWaitLoad()
-
-	img, err := page.Screenshot(true, &proto.PageCaptureScreenshot{
+	img, err := c.GetPage(url).Screenshot(true, &proto.PageCaptureScreenshot{
 		Format: proto.PageCaptureScreenshotFormatPng,
 		Clip: &proto.PageViewport{
 			X:      0,
@@ -40,4 +35,16 @@ func (c *Celeritas) TakeScreenshot(url, testname string, wight, height float64) 
 		return err
 	}
 	return nil
+}
+
+func (c *Celeritas) GetPage(url string) *rod.Page {
+	return rod.New().
+		MustConnect().
+		MustIgnoreCertErrors(true).
+		MustPage(url).
+		MustWaitLoad()
+}
+
+func (c *Celeritas) GetElementByID(page *rod.Page, ID string) *rod.Element {
+	return page.MustElement("#" + ID)
 }

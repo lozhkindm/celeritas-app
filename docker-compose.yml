@@ -4,7 +4,7 @@ services:
   postgres:
     image: 'postgres:13.4'
     ports:
-      - "15432:5432"
+      - "25432:5432"
     restart: always
     environment:
       POSTGRES_USER: postgres

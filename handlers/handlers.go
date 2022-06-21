@@ -265,6 +265,13 @@ func (h *Handlers) PostGenericUpload(w http.ResponseWriter, r *http.Request) {
 	http.Redirect(w, r, "/upload", http.StatusSeeOther)
 }
 
+func (h *Handlers) Clicker(w http.ResponseWriter, r *http.Request) {
+	if err := h.render(w, r, "tester", nil, nil); err != nil {
+		h.App.ErrorLog.Println(err)
+		return
+	}
+}
+
 func getFileToUpload(r *http.Request, key string) (string, error) {
 	if err := r.ParseMultipartForm(10 << 20); err != nil {
 		return "", err

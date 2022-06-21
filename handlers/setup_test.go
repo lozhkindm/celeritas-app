@@ -70,6 +70,7 @@ func getRoutes() http.Handler {
 	mux := chi.NewRouter()
 	mux.Use(cel.SessionLoad)
 	mux.Get("/", testHandlers.Home)
+	mux.Get("/tester", testHandlers.Clicker)
 	mux.Handle("/public/*", http.StripPrefix("/public", http.FileServer(http.Dir("./../public"))))
 	return mux
 }

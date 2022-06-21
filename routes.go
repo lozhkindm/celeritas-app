@@ -44,6 +44,7 @@ func (a *application) routes() *chi.Mux {
 	a.routeGet("/delete-from-fs", a.Handlers.DeleteFromFileSystem)
 	a.routeGet("/upload", a.Handlers.FormGenericUpload)
 	a.routePost("/upload", a.Handlers.PostGenericUpload)
+	a.routeGet("/tester", a.Handlers.Clicker)
 
 	a.routeGet("/auth/{provider}", a.Handlers.SocialLogin)
 	a.routeGet("/auth/{provider}/callback", a.Handlers.SocialMediaCallback)

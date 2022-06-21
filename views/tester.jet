@@ -1,0 +1,23 @@
+{{extends "./layouts/base.jet"}}
+
+{{block browserTitle()}}Browser Test{{end}}
+
+{{block css()}}{{end}}
+
+{{block pageContent()}}
+<div class="col">
+    <div class="mt-3">
+        <a class="btn btn-primary" id="clicker" href="javascript:void(0);">Click me</a>
+    </div>
+    <hr>
+    <div id="output"></div>
+</div>
+{{end}}
+
+{{block js()}}
+<script>
+document.getElementById("clicker").addEventListener("click", function(){
+    document.getElementById("output").innerHTML = "Clicked the button!";
+})
+</script>
+{{end}}
